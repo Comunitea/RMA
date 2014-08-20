@@ -31,37 +31,6 @@ class stock_picking(orm.Model):
         'claim_id': fields.many2one('crm.claim', 'Claim'),
     }
 
-    def create(self, cr, uid, vals, context=None):
-        if ('name' not in vals) or (vals.get('name') == '/'):
-            sequence_obj = self.pool.get('ir.sequence')
-            if vals['type'] == 'internal':
-                seq_obj_name = self._name
-            else:
-                seq_obj_name = 'stock.picking.' + vals['type']
-            vals['name'] = sequence_obj.get(cr, uid, seq_obj_name,
-                                            context=context)
-        new_id = super(stock_picking, self).create(cr, uid, vals,
-                                                   context=context)
-        return new_id
-
-
-class stock_picking_out(orm.Model):
-
-    _inherit = "stock.picking.out"
-
-    _columns = {
-        'claim_id': fields.many2one('crm.claim', 'Claim'),
-    }
-
-
-class stock_picking_in(orm.Model):
-
-    _inherit = "stock.picking.in"
-
-    _columns = {
-        'claim_id': fields.many2one('crm.claim', 'Claim'),
-    }
-
 
 # This part concern the case of a wrong picking out. We need to create a new
 # stock_move in a picking already open.
@@ -78,7 +47,7 @@ class stock_move(orm.Model):
             picking_obj = self.pool.get('stock.picking')
             picking = picking_obj.browse(cr, uid, vals['picking_id'],
                                          context=context)
-            if picking.claim_id and picking.type == u'in':
+            if picking.claim_id and picking.picking_type_code == u'incoming':
                 self.write(cr, uid, move_id, {'state': 'confirmed'},
                            context=context)
         return move_id

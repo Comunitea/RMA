@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Copyright 2013 Camptocamp
-#    Copyright 2009-2013 Akretion, 
+#    Copyright 2009-2013 Akretion,
 #    Author: Emmanuel Samyn, Raphaël Valyi, Sébastien Beau, Joel Grand-Guillaume
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ This module adds the following location on warehouses :
 
  * Carrier Loss
  * RMA
- * Breakage Loss 
+ * Breakage Loss
  * Refurbish
  * Mistake Loss
 
@@ -60,6 +60,6 @@ WARNING: Use with caution, this module is currently not yet completely debugged 
     'stock_data.xml',
     'claim_rma_view.xml',
  ],
- 'installable': False,
+ 'installable': True,
  'application': True,
 }

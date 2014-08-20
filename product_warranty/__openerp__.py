@@ -49,7 +49,7 @@ Those informations are used in the RMA Claim (Product Return Management) module.
     ],
     'demo_xml': [],
     'test': [],
-    'installable': False,
+    'installable': True,
     'active': False,
     'certificate' : '',
     'images': ['images/product_warranty.png'],

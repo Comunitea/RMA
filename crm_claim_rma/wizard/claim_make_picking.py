@@ -160,17 +160,17 @@ class claim_make_picking(orm.TransientModel):
         view_obj = self.pool.get('ir.ui.view')
         name = 'RMA picking out'
         if context.get('picking_type') == 'out':
-            p_type = 'out'
+            p_type = 'outgoing'
             write_field = 'move_out_id'
             note = 'RMA picking out'
             view_xml_id = 'stock_picking_form'
         else:
-            p_type = 'in'
+            p_type = 'incoming'
             write_field = 'move_in_id'
             if context.get('picking_type'):
                 note = 'RMA picking ' + str(context.get('picking_type'))
                 name = note
-        model = 'stock.picking.' + p_type
+        model = 'stock.picking'
         view_id = view_obj.search(cr, uid,
                                   [('model', '=', model),
                                    ('type', '=', 'form'),
@@ -207,10 +207,11 @@ class claim_make_picking(orm.TransientModel):
                       'same address.'))
             partner_id = common_dest_partner_id
         # create picking
+        type_ids = self.pool.get('stock.picking.type').search(cr, uid, [('code', '=', p_type)], context=context)
         picking_id = picking_obj.create(
             cr, uid,
             {'origin': claim.number,
-             'type': p_type,
+             'picking_type_id': type_ids and type_ids[0],
              'move_type': 'one',  # direct
              'state': 'draft',
              'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
@@ -254,7 +255,7 @@ class claim_make_picking(orm.TransientModel):
             wf_service.trg_validate(uid, 'stock.picking',
                                     picking_id, 'button_confirm', cr)
             picking_obj.action_assign(cr, uid, [picking_id])
-        domain = ("[('type', '=', '%s'), ('partner_id', '=', %s)]" %
+        domain = ("[('picking_type_code', '=', '%s'), ('partner_id', '=', %s)]" %
                   (p_type, partner_id))
         return {
             'name': '%s' % name,

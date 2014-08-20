@@ -274,7 +274,7 @@ class claim_line(orm.Model):
         wh = wh_obj.browse(cr, uid, warehouse_id, context=context)
         location_dest_id = wh.lot_stock_id.id
         if prod:
-            seller = prod.seller_info_id
+            seller = prod.seller_id
             if seller:
                 return_type = seller.warranty_return_partner
                 if return_type != 'company':
@@ -294,7 +294,7 @@ class claim_line(orm.Model):
 
         """
         return_address = None
-        seller = claim_line.product_id.seller_info_id
+        seller = claim_line.product_id.seller_id
         if seller:
             return_address_id = seller.warranty_return_address.id
             return_type = seller.warranty_return_partner
@@ -386,7 +386,6 @@ class crm_claim(orm.Model):
     _columns = {
         'number': fields.char(
             'Number', readonly=True,
-            states={'draft': [('readonly', False)]},
             required=True,
             select=True,
             help="Company internal claim unique number"),
@@ -418,6 +417,7 @@ class crm_claim(orm.Model):
         'warehouse_id': fields.many2one(
             'stock.warehouse', string='Warehouse',
             required=True),
+        'state_show_buttons': fields.related('stage_id', 'show_buttons', type="boolean", store=True, string="show buttons", readonly=True)
     }
 
     _defaults = {
@@ -513,3 +513,11 @@ class crm_claim(orm.Model):
             # because this imply modifying followers
             pass
         return recipients
+
+class crm_claim_stage(orm.Model):
+
+    _inherit = 'crm.claim.stage'
+
+    _columns = {
+        'show_buttons': fields.boolean('Show buttons')
+    }
