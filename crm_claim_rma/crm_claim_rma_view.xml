@@ -281,37 +281,37 @@
                 </field>
                 <xpath expr="//sheet[@string='Claims']/group[1]" position="inside">
                     <div class="oe_right oe_button_box" name="buttons">
-                        <button name="%(act_crm_claim_rma_sale_orders)d" type="action"
+                        <button class="oe_stat_button" name="%(act_crm_claim_rma_sale_orders)d" type="action"
                                 string="Quotations and Sales"
                                 attrs="{'invisible': ['|',('partner_id','=', False),('claim_type','in', ['supplier','other'])]}"
                                 context="{'search_default_partner_id': [partner_id],'search_default_user_id':False}"
                                />
-                        <button name="%(act_crm_claim_rma_invoice_out)d" type="action"
+                        <button class="oe_inline oe_stat_button" icon="fa-pencil-square-o" name="%(act_crm_claim_rma_invoice_out)d" type="action"
                                 string="Customer Invoices"
                                 attrs="{'invisible': ['|',('partner_id','=', False),('claim_type','in', ['supplier','other'])]}"
                                 context="{'search_default_partner_id': [partner_id],'search_default_user_id':False}"
                                />
-                        <button name="%(act_crm_claim_rma_refunds_out)d" type="action"
+                        <button class="oe_inline oe_stat_button" icon="fa-pencil-square-o" name="%(act_crm_claim_rma_refunds_out)d" type="action"
                                 string="Customer Refunds"
                                 attrs="{'invisible': ['|',('partner_id','=', False),('claim_type','in', ['supplier','other'])]}"
                                 context="{'search_default_partner_id': [partner_id],'search_default_user_id':False}"
                                />
-                        <button name="%(act_crm_claim_rma_invoice_in)d" type="action"
+                        <button class="oe_inline oe_stat_button" icon="fa-pencil-square-o" name="%(act_crm_claim_rma_invoice_in)d" type="action"
                                 string="Supplier Invoices"
                                 attrs="{'invisible': ['|',('partner_id','=', False),('claim_type','in', ['customer','other'])]}"
                                 context="{'search_default_partner_id': [partner_id],'search_default_user_id':False}"
                                />
-                        <button name="%(act_crm_claim_rma_refunds_in)d" type="action"
+                        <button class="oe_inline oe_stat_button" icon="fa-truck" name="%(act_crm_claim_rma_refunds_in)d" type="action"
                                 string="Supplier Refunds"
                                 attrs="{'invisible': ['|',('partner_id','=', False),('claim_type','in', ['customer','other'])]}"
                                 context="{'search_default_partner_id': [partner_id],'search_default_user_id':False}"
                                />
-                        <button name="%(act_crm_claim_rma_picking_in)d" type="action"
+                        <button class="oe_inline oe_stat_button" icon="fa-truck" name="%(act_crm_claim_rma_picking_in)d" type="action"
                                 string="Returned Products"
                                 attrs="{'invisible': ['|',('partner_id','=', False),('claim_type','in', ['supplier','other'])]}"
                                 context="{'search_default_claim_id': active_id,'search_default_user_id':False}"
                                />
-                        <button name="%(act_crm_claim_rma_picking_out)d" type="action"
+                        <button class="oe_inline oe_stat_button" icon="fa-truck" name="%(act_crm_claim_rma_picking_out)d" type="action"
                                 string="Deliveries"
                                 attrs="{'invisible': ['|',('partner_id','=', False),('claim_type','in', ['supplier','other'])]}"
                                 context="{'search_default_partner_id': [partner_id],'search_default_user_id':False}"
