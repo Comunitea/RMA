@@ -227,13 +227,17 @@ class claim_make_picking(orm.TransientModel):
         # Create picking lines
         for wizard_claim_line in wizard.claim_line_ids:
             move_obj = self.pool.get('stock.move')
+            product = wizard_claim_line.product_id.id
+            if context.get('picking_type', 'in') == u'out' and \
+                    wizard_claim_line.equivalent_product_id:
+                product = wizard_claim_line.equivalent_product_id.id
             move_id = move_obj.create(
                 cr, uid,
                 {'name': wizard_claim_line.product_id.name_template,
                  'priority': '0',
                  'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                  'date_expected': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                 'product_id': wizard_claim_line.product_id.id,
+                 'product_id': product,
                  'product_uom_qty': wizard_claim_line.product_returned_quantity,
                  'product_uom': wizard_claim_line.product_id.uom_id.id,
                  'partner_id': partner_id,

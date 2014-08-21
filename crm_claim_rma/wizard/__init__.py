@@ -22,3 +22,4 @@
 ##############################################################################
 from . import claim_make_picking
 from . import account_invoice_refund
+import equivalent_products_wizard

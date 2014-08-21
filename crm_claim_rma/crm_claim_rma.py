@@ -104,6 +104,8 @@ class claim_line(orm.Model):
             'product.product',
             string='Product',
             help="Returned product"),
+        'equivalent_product_id': fields.many2one(
+            'product.product', 'Replacement'),
         'product_returned_quantity': fields.float(
             'Quantity', digits=(12, 2),
             help="Quantity of product returned"),
@@ -305,7 +307,6 @@ class claim_line(orm.Model):
                               company.partner_id)
             return_address_id = return_address.id
             return_type = 'company'
-
         location_dest_id = self.get_destination_location(
             cr, uid, claim_line.product_id.id,
             claim_line.claim_id.warehouse_id.id,
@@ -330,8 +331,35 @@ class claim_line(orm.Model):
                                              claim_line, context=context)
         return True
 
+    def equivalent_products(self, cr, uid, ids, context=None):
+        if not ids:
+            return False
+        line = self.browse(cr, uid, ids[0], context)
+        tag_wiz_obj = self.pool.get('equivalent.tag.wizard')
+        wiz_obj = self.pool.get("equivalent.products.wizard")
+        context['line_id'] = line.id
+        wizard_id = wiz_obj.create(cr, uid, {'line_id': ids[0]},
+                                   context=context)
+        for tag in line.product_id.tag_ids:
+            tag_wiz_obj.create(cr, uid,
+                               {'name': tag.name, 'wiz_id': wizard_id},
+                               context)
+        return {
+            'name': _("Equivalent products"),
+            'view_mode': 'form',
+            'view_id': False,
+            'view_type': 'form',
+            'res_model': 'equivalent.products.wizard',
+            'res_id': wizard_id,
+            'type': 'ir.actions.act_window',
+            'nodestroy': True,
+            'target': 'new',
+            'domain': '[]',
+            'context': context
+        }
 
-#TODO add the option to split the claim_line in order to manage the same
+
+# TODO add the option to split the claim_line in order to manage the same
 # product separately
 class crm_claim(orm.Model):
     _inherit = 'crm.claim'
@@ -417,7 +445,10 @@ class crm_claim(orm.Model):
         'warehouse_id': fields.many2one(
             'stock.warehouse', string='Warehouse',
             required=True),
-        'state_show_buttons': fields.related('stage_id', 'show_buttons', type="boolean", store=True, string="show buttons", readonly=True)
+        'state_show_buttons': fields.related('stage_id', 'show_buttons',
+                                             type="boolean", store=True,
+                                             string="show buttons",
+                                             readonly=True)
     }
 
     _defaults = {
@@ -513,6 +544,7 @@ class crm_claim(orm.Model):
             # because this imply modifying followers
             pass
         return recipients
+
 
 class crm_claim_stage(orm.Model):
 

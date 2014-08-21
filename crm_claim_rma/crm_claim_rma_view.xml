@@ -54,10 +54,12 @@
             <field name="model">claim.line</field>
             <field name="arch" type="xml">
                 <tree string="Returned lines">
+                    <field name="product_id"/>
+                    <button name="equivalent_products" string="Change product" type="object" icon="terp-gtk-jump-to-ltr"/>
+                    <field name="equivalent_product_id" readonly="1"/>
                     <field name="claim_id" invisible="1"/>
                     <field name="state"/>
                     <field name="substate_id"/>
-                    <field name="product_id"/>
                     <field name="name"/>
                     <field name="prodlot_id"/>
                     <field name="warning"/>
@@ -93,6 +95,7 @@
                         <group string="Returned good">
                             <field name="product_returned_quantity"/>
                             <field name="product_id"/>
+                            <field name="equivalent_product_id" readonly="1"/>
                             <field name="prodlot_id"/>
                             <field name="unit_sale_price"/>
                             <field name="return_value"/>
