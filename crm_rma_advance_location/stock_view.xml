@@ -12,19 +12,19 @@
                 <xpath expr="/form/header/button[@string='Reverse Transfer']" position="after">
                         <button name="%(action_stock_picking_from_claim_picking)d"
                                 string="Product to stock" type="action"
-                                attrs="{'invisible':[('picking_type_code', '!=', 'incoming'),
+                                attrs="{'invisible':['|', ('picking_type_code', '!=', 'incoming'),
                                                     '|',
                                                     ('state','&lt;&gt;','done'),
                                                     ('claim_id', '=', False)]}"/>
                         <button name="%(action_loss_picking_from_claim_picking)d"
                                 string="Product to Loss" type="action"
-                                attrs="{'invisible':[('picking_type_code', '!=', 'incoming'),
+                                attrs="{'invisible':['|', ('picking_type_code', '!=', 'incoming'),
                                                     '|',
                                                     ('state','&lt;&gt;','done'),
                                                     ('claim_id', '=', False)]}"/>
                         <button name="%(action_used_picking_from_claim_picking)d"
                                 string="Product to refurbish stock" type="action"
-                                attrs="{'invisible':[('picking_type_code', '!=', 'incoming'),
+                                attrs="{'invisible':['|', ('picking_type_code', '!=', 'incoming'),
                                                     '|',
                                                     ('state','&lt;&gt;','done'),
                                                     ('claim_id', '=', False)]}"/>

@@ -90,6 +90,7 @@ class claim_make_picking_from_picking(orm.TransientModel):
         view_obj = self.pool.get('ir.ui.view')
         if context is None: context = {}
         p_type = 'internal'
+        type_ids = self.pool.get('stock.picking.type').search(cr, uid, [('code', '=', p_type)], context=context)
         if context.get('picking_type'):
             context_type = context.get('picking_type')[8:]
             note = 'Internal picking from RMA to %s' %context_type
@@ -105,9 +106,9 @@ class claim_make_picking_from_picking(orm.TransientModel):
             context['active_id'], context=context)
         partner_id = prev_picking.partner_id.id
         # create picking
-        picking_id = picking_obj.create(cr, uid, {
+        '''picking_id = picking_obj.create(cr, uid, {
                     'origin': prev_picking.origin,
-                    'type': p_type,
+                    'picking_type_id': type_ids and type_ids[0],
                     'move_type': 'one', # direct
                     'state': 'draft',
                     'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
@@ -143,15 +144,41 @@ class claim_make_picking_from_picking(orm.TransientModel):
                     'note': note,
                 })
             wizard_move = move_obj.write(cr, uid,
-                wizard_picking_line.id,
-                {'move_dest_id': move_id},
-                context=context)
+            wizard_picking_line.id,
+            {'move_dest_id': move_id},
+            context=context)'''
+        default_picking_data = {
+            'move_lines': [],
+            'location_id': wizard.picking_line_source_location.id,
+            'location_dest_id': wizard.picking_line_dest_location.id,
+            'picking_type_id': type_ids and type_ids[0],
+            'note' : note,
+            'claim_id': prev_picking.claim_id.id,
+        }
+        picking_id = picking_obj.copy(cr, uid, prev_picking.id, default_picking_data, context)
+        for wizard_picking_line in wizard.picking_line_ids:
+            default_move_data = {
+                'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                'date_expected': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                'partner_id': prev_picking.partner_id.id,
+                'picking_id': picking_id,
+                'company_id': prev_picking.company_id.id,
+                'location_id': wizard.picking_line_source_location.id,
+                'location_dest_id': wizard.picking_line_dest_location.id,
+                'note': note,
+            }
+            move_id = move_obj.copy(cr, uid, wizard_picking_line.id, default_move_data, context)
+            wizard_move = move_obj.write(cr, uid,
+                                         wizard_picking_line.id,
+                                         {'move_dest_id': move_id},
+                                         context=context)
+
         wf_service = netsvc.LocalService("workflow")
         if picking_id:
-            wf_service.trg_validate(uid, 
+            wf_service.trg_validate(uid,
                 'stock.picking', picking_id,'button_confirm', cr)
             picking_obj.action_assign(cr, uid, [picking_id])
-        domain = "[('type','=','%s'),('partner_id','=',%s)]"%(p_type, partner_id)
+        domain = "[('picking_type_code','=','%s'),('partner_id','=',%s)]"%(p_type, partner_id)
         return {
             'name': '%s' % name,
             'view_type': 'form',
