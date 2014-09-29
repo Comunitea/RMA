@@ -188,23 +188,23 @@ class claim_make_picking(orm.TransientModel):
         if context.get('product_return'):
             common_dest_loc_id = self._get_common_dest_location_from_line(
                 cr, uid, line_ids, context=context)
-            if not common_dest_loc_id:
-                raise orm.except_orm(
-                    _('Error !'),
-                    _('A product return cannot be created for various '
-                      'destination locations, please choose line with a '
-                      'same destination location.'))
+            # if not common_dest_loc_id:
+            #     raise orm.except_orm(
+            #         _('Error !'),
+            #         _('A product return cannot be created for various '
+            #           'destination locations, please choose line with a '
+            #           'same destination location.'))
             self.pool.get('claim.line').auto_set_warranty(cr, uid,
                                                           line_ids,
                                                           context=context)
             common_dest_partner_id = self._get_common_partner_from_line(
                 cr, uid, line_ids, context=context)
-            if not common_dest_partner_id:
-                raise orm.except_orm(
-                    _('Error !'),
-                    _('A product return cannot be created for various '
-                      'destination addresses, please choose line with a '
-                      'same address.'))
+            # if not common_dest_partner_id:
+            #     raise orm.except_orm(
+            #         _('Error !'),
+            #         _('A product return cannot be created for various '
+            #           'destination addresses, please choose line with a '
+            #           'same address.'))
             partner_id = common_dest_partner_id
         # create picking
         type_ids = self.pool.get('stock.picking.type').search(cr, uid, [('code', '=', p_type)], context=context)

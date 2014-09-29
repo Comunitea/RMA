@@ -320,15 +320,15 @@ class claim_line(orm.Model):
 
     def set_warranty(self, cr, uid, ids, context=None):
         """ Calculate warranty limit and address """
-        for claim_line in self.browse(cr, uid, ids, context=context):
-            if not (claim_line.product_id and claim_line.invoice_line_id):
-                raise orm.except_orm(
-                    _('Error !'),
-                    _('Please set product and invoice.'))
-            self.set_warranty_limit(cr, uid, ids,
-                                    claim_line, context=context)
-            self.set_warranty_return_address(cr, uid, ids,
-                                             claim_line, context=context)
+        # for claim_line in self.browse(cr, uid, ids, context=context):
+        #     if not (claim_line.product_id and claim_line.invoice_line_id):
+        #         raise orm.except_orm(
+        #             _('Error !'),
+        #             _('Please set product and invoice.'))
+        #     self.set_warranty_limit(cr, uid, ids,
+        #                             claim_line, context=context)
+        #     self.set_warranty_return_address(cr, uid, ids,
+        #                                      claim_line, context=context)
         return True
 
     def equivalent_products(self, cr, uid, ids, context=None):
