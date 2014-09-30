@@ -21,6 +21,7 @@
 #
 ##############################################################################
 from openerp.osv import orm
+from openerp import _
 
 
 class account_invoice_refund(orm.TransientModel):
@@ -30,8 +31,10 @@ class account_invoice_refund(orm.TransientModel):
     def compute_refund(self, cr, uid, ids, mode='refund', context=None):
         if context is None:
             context = {}
-        if context.get('invoice_ids'):
+        if context.get('invoice_ids', []) and context.get('invoice_ids')[0]:
             context['active_ids'] = context.get('invoice_ids')
+        elif context['active_model'] == u'crm.claim':
+            raise orm.except_orm(_('Error'), _('The claim not have invoices to refund.'))
         return super(account_invoice_refund, self).compute_refund(
             cr, uid, ids, mode=mode, context=context)
 
