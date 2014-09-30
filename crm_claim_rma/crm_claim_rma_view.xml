@@ -140,6 +140,7 @@
         <field name="arch" type="xml">
             <field name="stage_id" position="after">
                 <field name="section_id" />
+                <field name="rma_cost" sum="Total cost"/>
             </field>
             <field name="name" position="before">
                 <field name="number" />
@@ -169,7 +170,7 @@
                         <separator string="Product Return" colspan="4"/>
                         <group>
                             <field name="invoice_id" on_change="onchange_invoice_id(invoice_id,warehouse_id,context)" domain="['|',('commercial_partner_id','=',partner_id),('partner_id','=',partner_id)]" />
-                            <field name="delivery_address_id" context="{'tree_view_ref': 'crm_claim_rma.view_partner_contact_tree', 'search_default_parent_id': partner_id}"/>
+                            <field name="delivery_address_id" context="{'tree_view_ref': 'crm_claim_rma.view_partner_contact_tree', 'search_default_parent_id': partner_id}" required="1"/>
                         </group>
                         <group>
                             <!-- Place for mass return button from crm_rma_lot_mass_return -->
@@ -268,7 +269,8 @@
             <field name="arch" type="xml">
                 <field name="date_deadline" position="after">
                     <field name="claim_type"/>
-                    <field name="warehouse_id" />
+                    <field name="warehouse_id"/>
+                    <field name="rma_cost" readonly="1"/>
                 </field>
                 <field name="name" position="replace">
                     <div class="oe_title">
@@ -317,7 +319,7 @@
                         <button class="oe_inline oe_stat_button" icon="fa-truck" name="%(act_crm_claim_rma_picking_out)d" type="action"
                                 string="Deliveries"
                                 attrs="{'invisible': ['|',('partner_id','=', False),('claim_type','in', ['supplier','other'])]}"
-                                context="{'search_default_partner_id': [partner_id],'search_default_user_id':False}"
+                                context="{'search_default_claim_id': active_id,'search_default_user_id':False}"
                                />
                     </div>
                 </xpath>

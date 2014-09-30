@@ -155,6 +155,7 @@ class claim_make_picking(orm.TransientModel):
     # If "Create" button pressed
     def action_create_picking(self, cr, uid, ids, context=None):
         picking_obj = self.pool.get('stock.picking')
+        claim_obj = self.pool.get('crm.claim')
         if context is None:
             context = {}
         view_obj = self.pool.get('ir.ui.view')
@@ -177,9 +178,9 @@ class claim_make_picking(orm.TransientModel):
                                    ],
                                   context=context)[0]
         wizard = self.browse(cr, uid, ids[0], context=context)
-        claim = self.pool.get('crm.claim').browse(cr, uid,
-                                                  context['active_id'],
-                                                  context=context)
+        claim = claim_obj.browse(cr, uid, context['active_id'],
+                                 context=context)
+        rma_cost = claim.rma_cost
         partner_id = claim.delivery_address_id.id
         line_ids = [x.id for x in wizard.claim_line_ids]
         # In case of product return, we don't allow one picking for various
@@ -205,7 +206,7 @@ class claim_make_picking(orm.TransientModel):
             #         _('A product return cannot be created for various '
             #           'destination addresses, please choose line with a '
             #           'same address.'))
-            partner_id = common_dest_partner_id
+            #partner_id = common_dest_partner_id
         # create picking
         type_ids = self.pool.get('stock.picking.type').search(cr, uid, [('code', '=', p_type)], context=context)
         picking_id = picking_obj.create(
@@ -227,10 +228,14 @@ class claim_make_picking(orm.TransientModel):
         # Create picking lines
         for wizard_claim_line in wizard.claim_line_ids:
             move_obj = self.pool.get('stock.move')
-            product = wizard_claim_line.product_id.id
+            product = wizard_claim_line.product_id
             if context.get('picking_type', 'in') == u'out' and \
                     wizard_claim_line.equivalent_product_id:
-                product = wizard_claim_line.equivalent_product_id.id
+                product = wizard_claim_line.equivalent_product_id
+            qty = wizard_claim_line.product_returned_quantity
+            import ipdb; ipdb.set_trace()
+            rma_cost += (p_type == u'outgoing' or context.get('picking_type') == 'loss') and (product.standard_price * qty) or -(product.standard_price * qty)
+            product = product.id
             move_id = move_obj.create(
                 cr, uid,
                 {'name': wizard_claim_line.product_id.name_template,
@@ -261,6 +266,7 @@ class claim_make_picking(orm.TransientModel):
             picking_obj.action_assign(cr, uid, [picking_id])
         domain = ("[('picking_type_code', '=', '%s'), ('partner_id', '=', %s)]" %
                   (p_type, partner_id))
+        claim_obj.write(cr, uid, [claim.id], {'rma_cost': rma_cost}, context)
         return {
             'name': '%s' % name,
             'view_type': 'form',

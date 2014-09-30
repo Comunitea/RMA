@@ -448,7 +448,8 @@ class crm_claim(orm.Model):
         'state_show_buttons': fields.related('stage_id', 'show_buttons',
                                              type="boolean", store=True,
                                              string="show buttons",
-                                             readonly=True)
+                                             readonly=True),
+        'rma_cost': fields.float('RMA cost'),
     }
 
     _defaults = {
