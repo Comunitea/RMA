@@ -1,6 +1,6 @@
 # Translation of OpenERP Server.
 # This file contains the translation of the following modules:
-# 	* crm_claim_rma
+#   * crm_claim_rma
 #
 msgid ""
 msgstr ""
@@ -778,7 +778,7 @@ msgstr "Otro"
 #. module: crm_claim_rma
 #: view:crm.claim:0
 msgid "New Products Return"
-msgstr "Nueva devolución de productos"
+msgstr "Nueva recepción"
 
 #. module: crm_claim_rma
 #: view:crm.claim:0

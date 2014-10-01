@@ -82,15 +82,29 @@ class claim_make_picking(orm.TransientModel):
         warehouse_obj = self.pool.get('stock.warehouse')
         warehouse_id = context.get('warehouse_id')
         if context.get('picking_type') == 'out':
-            loc_id = warehouse_obj.read(
-                cr, uid, warehouse_id,
-                ['lot_stock_id'],
-                context=context)['lot_stock_id'][0]
-        elif context.get('partner_id'):
-            loc_id = self.pool.get('res.partner').read(
-                cr, uid, context['partner_id'],
-                ['property_stock_customer'],
-                context=context)['property_stock_customer'][0]
+            if context.get('type') == 'supplier':
+                loc_id = warehouse_obj.read(
+                    cr, uid, warehouse_id,
+                    ['lot_rma_id'],
+                    context=context)['lot_rma_id'][0]
+            if context.get('type') == 'customer':
+                loc_id = warehouse_obj.read(
+                    cr, uid, warehouse_id,
+                    ['lot_stock_id'],
+                    context=context)['lot_stock_id'][0]
+
+        elif context.get('picking_type') == 'in':
+            if context.get('type') == 'supplier':
+                loc_id = self.pool.get('res.partner').read(
+                    cr, uid, context['partner_id'],
+                    ['property_stock_supplier'],
+                    context=context)['property_stock_supplier'][0]
+
+            if context.get('type') == 'customer':
+                loc_id = self.pool.get('res.partner').read(
+                    cr, uid, context['partner_id'],
+                    ['property_stock_customer'],
+                    context=context)['property_stock_customer'][0]
         return loc_id
 
     def _get_common_dest_location_from_line(self, cr, uid, line_ids, context):
@@ -130,12 +144,20 @@ class claim_make_picking(orm.TransientModel):
         if context is None:
             context = {}
         loc_id = False
-        if context.get('picking_type') == 'out' and context.get('partner_id'):
-            loc_id = self.pool.get('res.partner').read(
-                cr, uid, context.get('partner_id'),
-                ['property_stock_customer'],
-                context=context)['property_stock_customer'][0]
-        elif context.get('picking_type') == 'in' and context.get('partner_id'):
+        if context.get('picking_type') == 'out':
+            if context.get('type') == 'supplier':
+                loc_id = self.pool.get('res.partner').read(
+                    cr, uid, context.get('partner_id'),
+                    ['property_stock_supplier'],
+                    context=context)['property_stock_supplier'][0]
+            elif context.get('type') == 'customer':
+                loc_id = self.pool.get('res.partner').read(
+                    cr, uid, context.get('partner_id'),
+                    ['property_stock_customer'],
+                    context=context)['property_stock_customer'][0]
+
+
+        elif context.get('picking_type') == 'in' :
             # Add the case of return to supplier !
             line_ids = self._get_claim_lines(cr, uid, context=context)
             loc_id = self._get_common_dest_location_from_line(cr, uid,

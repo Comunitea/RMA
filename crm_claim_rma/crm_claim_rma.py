@@ -37,10 +37,15 @@ class substate_substate(orm.Model):
     _name = "substate.substate"
     _description = "substate that precise a given state"
     _columns = {
+        'active': fields.boolean('Active'),
         'name': fields.char('Sub state', required=True),
         'substate_descr': fields.text(
             'Description',
             help="To give more information about the sub state"),
+    }
+
+    _defaults = {
+        'active': True,
     }
 
 
