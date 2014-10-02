@@ -161,10 +161,7 @@ class claim_line(orm.Model):
         'state': fields.selection(
             [('draft', 'Draft'),
              ('refused', 'Refused'),
-             ('confirmed', 'Confirmed, waiting for product'),
-             ('in_to_control', 'Received, to control'),
-             ('in_to_treate', 'Controlled, to treate'),
-             ('treated', 'Treated')],
+             ('confirmed', 'Confirmed')],
             string='State'),
         'substate_id': fields.many2one(
             'substate.substate',
@@ -194,8 +191,8 @@ class claim_line(orm.Model):
             string='Move Line from customer picking out',
             help='The move line related to the returned product'),
 
-        'move_in_customer_state': fields.related('move_in_customer_id', 'state', type='char', string='customer picking in state'),
-        'move_out_customer_state': fields.related('move_out_customer_id', 'state', type='char', string='customer picking out state'),
+        'move_in_customer_state': fields.related('move_in_customer_id', 'state', type='char', string='customer picking in state', readonly=True),
+        'move_out_customer_state': fields.related('move_out_customer_id', 'state', type='char', string='customer picking out state', readonly=True),
         'repair_id': fields.many2one('mrp.repair', 'Repair'),
 
         'location_dest_id': fields.many2one(
