@@ -69,8 +69,8 @@
                     <field name="product_returned_quantity"/>
                     <field name="claim_origine"/>
                     <!--field name="refund_line_id"/>
-                    <field name="move_in_id"/>
-                    <field name="move_out_id"/-->
+                    <field name="move_in_customer_id"/>
+                    <field name="move_out_customer_id"/-->
                 </tree>
             </field>
         </record>
@@ -81,9 +81,10 @@
             <field name="model">claim.line</field>
             <field name="arch" type="xml">
                 <form string="Claim Line" version="7.0">
-                <!--header>
-                    <button name="set_warranty" string="Calculate warranty state" type="object" class="oe_highlight"/>
-                </header-->
+                <header>
+                    <!--button name="set_warranty" string="Calculate warranty state" type="object" class="oe_highlight"/-->
+                    <button name="%(action_claim_make_repair)d" type="action" string="create repair" attrs="{'invisible': ['|', ('move_in_customer_state', '!=', 'done'), ('repair_id', '!=', False)]}"/>
+                </header>
                 <sheet string="Claims">
                     <div class="oe_title">
                             <group>
@@ -95,6 +96,7 @@
                         <group string="Returned good">
                             <field name="product_returned_quantity"/>
                             <field name="product_id"/>
+                            <button name="equivalent_products" string="Change product" type="object" icon="terp-gtk-jump-to-ltr"/>
                             <field name="equivalent_product_id" readonly="1"/>
                             <field name="prodlot_id"/>
                             <field name="unit_sale_price"/>
@@ -102,10 +104,13 @@
                         </group>
                         <group string="Linked Document">
                             <field name="claim_id" />
+                            <field name="repair_id" />
+                            <field name="move_in_customer_state" />
+                            <field name="move_out_customer_state" />
                             <!--field name="invoice_line_id"/>
                             <field name="refund_line_id"/>
-                            <field name="move_in_id"/>
-                            <field name="move_out_id"/-->
+                            <field name="move_in_customer_id"/>
+                            <field name="move_out_customer_id"/-->
                         </group>
                     </group>
                     <group>

@@ -75,9 +75,11 @@ Contributors:
                 'crm_claim',
                 'product_warranty',
                 'equivalent_products',
+                'mrp_repair'
                 ],
     'data': ['wizard/claim_make_picking_view.xml',
              'wizard/equivalent_products_wizard_view.xml',
+             'wizard/claim_make_repair_view.xml',
              'crm_claim_rma_view.xml',
              'security/ir.model.access.csv',
              'account_invoice_view.xml',

@@ -57,9 +57,9 @@ class claim_make_picking(orm.TransientModel):
             context = {}
         line_obj = self.pool.get('claim.line')
         if context.get('picking_type') == 'out':
-            move_field = 'move_out_id'
+            move_field = 'move_out_customer_id'
         else:
-            move_field = 'move_in_id'
+            move_field = 'move_in_customer_id'
         good_lines = []
         line_ids = line_obj.search(
             cr, uid,
@@ -184,12 +184,12 @@ class claim_make_picking(orm.TransientModel):
         name = 'RMA picking out'
         if context.get('picking_type') == 'out':
             p_type = 'outgoing'
-            write_field = 'move_out_id'
+            write_field = 'move_out_customer_id'
             note = 'RMA picking out'
             view_xml_id = 'stock_picking_form'
         else:
             p_type = 'incoming'
-            write_field = 'move_in_id'
+            write_field = 'move_in_customer_id'
             if context.get('picking_type'):
                 note = 'RMA picking ' + str(context.get('picking_type'))
                 name = note
@@ -203,7 +203,7 @@ class claim_make_picking(orm.TransientModel):
         claim = claim_obj.browse(cr, uid, context['active_id'],
                                  context=context)
         rma_cost = claim.rma_cost
-        partner_id = claim.delivery_address_id.id
+        partner_id = claim.partner_id.id
         line_ids = [x.id for x in wizard.claim_line_ids]
         # In case of product return, we don't allow one picking for various
         # product if location are different
@@ -255,7 +255,6 @@ class claim_make_picking(orm.TransientModel):
                     wizard_claim_line.equivalent_product_id:
                 product = wizard_claim_line.equivalent_product_id
             qty = wizard_claim_line.product_returned_quantity
-            import ipdb; ipdb.set_trace()
             rma_cost += (p_type == u'outgoing' or context.get('picking_type') == 'loss') and (product.standard_price * qty) or -(product.standard_price * qty)
             product = product.id
             move_id = move_obj.create(

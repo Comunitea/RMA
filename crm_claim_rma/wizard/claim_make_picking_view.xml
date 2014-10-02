@@ -16,8 +16,8 @@
                     <field name="claim_line_source_location" nolabel="1" />
                     <field name="claim_line_dest_location" nolabel="1" />
                     <separator string="Select lines for picking" colspan="4"/>
-                    <field name="claim_line_ids" nolabel="1" colspan="4">
-                        <tree string="Returned lines">
+                    <field name="claim_line_ids" nolabel="1" colspan="4"/>
+                        <!--tree string="Returned lines">
                             <field name="claim_id" invisible="1"/>
                             <field name="product_id"/>
                             <field name="equivalent_product_id" readonly="1"/>
@@ -35,7 +35,7 @@
                             <field name="move_in_id"/>
                             <field name="move_out_id"/>
                         </tree>
-                    </field>
+                    </field-->
                     <footer>
                         <button name="action_create_picking" string="Create picking" type="object" class="oe_highlight"/>
                         or
