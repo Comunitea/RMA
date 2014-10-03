@@ -230,7 +230,8 @@ class claim_make_picking(orm.TransientModel):
             #           'same address.'))
             #partner_id = common_dest_partner_id
         # create picking
-        type_ids = self.pool.get('stock.picking.type').search(cr, uid, [('code', '=', p_type)], context=context)
+        type_ids = self.pool.get('stock.picking.type').search(
+            cr, uid, [('code', '=', p_type)], context=context)
         picking_id = picking_obj.create(
             cr, uid,
             {'origin': claim.number,
@@ -255,7 +256,10 @@ class claim_make_picking(orm.TransientModel):
                     wizard_claim_line.equivalent_product_id:
                 product = wizard_claim_line.equivalent_product_id
             qty = wizard_claim_line.product_returned_quantity
-            rma_cost += (p_type == u'outgoing' or context.get('picking_type') == 'loss') and (product.standard_price * qty) or -(product.standard_price * qty)
+            rma_cost += (p_type == u'outgoing' or
+                         context.get('picking_type') == 'loss') and \
+                        (product.standard_price * qty) or \
+                        -(product.standard_price * qty)
             product = product.id
             move_id = move_obj.create(
                 cr, uid,
@@ -285,7 +289,8 @@ class claim_make_picking(orm.TransientModel):
             wf_service.trg_validate(uid, 'stock.picking',
                                     picking_id, 'button_confirm', cr)
             picking_obj.action_assign(cr, uid, [picking_id])
-        domain = ("[('picking_type_code', '=', '%s'), ('partner_id', '=', %s)]" %
+        domain = ("[('picking_type_code', '=', '%s'), \
+                   ('partner_id', '=', %s)]" %
                   (p_type, partner_id))
         claim_obj.write(cr, uid, [claim.id], {'rma_cost': rma_cost}, context)
         return {

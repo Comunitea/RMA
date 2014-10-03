@@ -191,9 +191,33 @@ class claim_line(orm.Model):
             string='Move Line from customer picking out',
             help='The move line related to the returned product'),
 
-        'move_in_customer_state': fields.related('move_in_customer_id', 'state', type='char', string='customer picking in state', readonly=True),
-        'move_out_customer_state': fields.related('move_out_customer_id', 'state', type='char', string='customer picking out state', readonly=True),
+        'move_in_customer_state': fields.related(
+            'move_in_customer_id', 'state', type='char',
+            string='picking in state', readonly=True),
+        'move_out_customer_state': fields.related(
+            'move_out_customer_id', 'state', type='char',
+            string='picking out state', readonly=True),
         'repair_id': fields.many2one('mrp.repair', 'Repair'),
+        'repair_state': fields.related('repair_id', 'state', type='char',
+                                       string='repair state', readonly=True),
+        'supplier_id': fields.many2one('res.partner', 'Supplier'),
+
+        'supplier_line_id': fields.many2one('claim.line',
+                                            'Supplier claim line'),
+        'original_line_id': fields.many2one('claim.line',
+                                            'original claim line',
+                                            readonly=True),
+
+        'claim_type': fields.related('claim_id', 'claim_type', type='char',
+                                     string='Claim type', readonly=True),
+
+        'move_in_supplier_state': fields.related(
+            'supplier_line_id', 'move_in_customer_state', type='char',
+            string='supplier picking in state', readonly=True),
+
+        'move_out_supplier_state': fields.related(
+            'supplier_line_id', 'move_out_customer_state', type='char',
+            string='supplier picking out state', readonly=True),
 
         'location_dest_id': fields.many2one(
             'stock.location',
@@ -201,9 +225,20 @@ class claim_line(orm.Model):
             help='The return stock location of the returned product'),
     }
 
+    @api.onchange('product_id')
+    def _get_default_supplier(self):
+        if self.product_id and len(self.product_id.seller_ids):
+            self.supplier_id = self.product_id.seller_ids[0].name
+            partners = self.product_id.seller_ids
+        else:
+            self.supplier_id = False
+            partners = self.env['res.partner'].search([('supplier', '=',
+                                                        True)])
+        return {'domain': {'partner_id': [('id', 'in', [x.id for x in
+                                                        partners])]}}
+
     _defaults = {
         'state': 'draft',
-        'name': 'none',
     }
 
     @staticmethod
@@ -372,13 +407,12 @@ class claim_line(orm.Model):
 class crm_claim(orm.Model):
     _inherit = 'crm.claim'
 
-
     @api.onchange('claim_type')
     def onchange_claim_type(self):
         if self.claim_type == 'customer':
-            return {'domain':{'partner_id': [('customer', '=', True)]}}
+            return {'domain': {'partner_id': [('customer', '=', True)]}}
         else:
-            return {'domain':{'partner_id': [('supplier', '=', True)]}}
+            return {'domain': {'partner_id': [('supplier', '=', True)]}}
 
     def _get_sequence_number(self, cr, uid, context=None):
         seq_obj = self.pool.get('ir.sequence')
@@ -435,8 +469,7 @@ class crm_claim(orm.Model):
             help="Company internal claim unique number"),
         'claim_type': fields.selection(
             [('customer', 'Customer'),
-             ('supplier', 'Supplier'),
-             ('other', 'Other')],
+             ('supplier', 'Supplier')],
             string='Claim type',
             required=True,
             help="Customer: from customer to company.\n "
@@ -568,5 +601,6 @@ class crm_claim_stage(orm.Model):
     _inherit = 'crm.claim.stage'
 
     _columns = {
-        'show_buttons': fields.boolean('Show buttons')
+        'show_buttons': fields.boolean('Show buttons'),
+        'closed': fields.boolean('closed')
     }

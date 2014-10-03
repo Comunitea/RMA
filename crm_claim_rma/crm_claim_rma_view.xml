@@ -15,10 +15,19 @@
                         string="In Progress"
                         domain="[('state','in',('confirmed','in_to_control','in_to_treate'))]"
                         separator="1" help="In Progress Claims"/>
+
+                    <filter string="Customer claim"
+                        domain="[('claim_type','=','customer')]"
+                        separator="1" help="Customer claims"/>
+                    <filter string="Supplier claim"
+                        domain="[('claim_type','=','supplier')]"
+                        separator="1" help="Supplier claims"/>
+
                     <separator orientation="vertical"/>
                     <field name="state" select='1'/>
                     <field name="substate_id" select='1'/>
                     <field name="name" select='1'/>
+                    <field name="supplier_id" select='1'/>
                     <!--field name="warning" select='1'/>
                     <field name="invoice_line_id" select='1'/>
                     <field name="product_id" select='1'/>
@@ -32,6 +41,12 @@
                     </group>
                     <newline/>
                     <group expand="0" string="Group By...">
+                        <filter string="State"
+                            domain="[]" help="State"
+                            context="{'group_by':'state'}" />
+                        <filter string="Supplier"
+                            domain="[]" help="Supplier"
+                            context="{'group_by':'supplier_id'}" />
                         <filter string="Invoice" icon="terp-dolar"
                             domain="[]" help="Invoice"
                             context="{'group_by':'invoice_id'}" />
@@ -43,6 +58,17 @@
                             domain="[]" context="{'group_by':'substate_id'}" />
                         <filter string="Claim n°" icon="terp-emblem-documents"
                             domain="[]" context="{'group_by':'claim_id'}" />
+
+                        <!--filter string="repair state" icon="terp-emblem-documents"
+                            domain="[]" context="{'group_by':'repair_state'}" />
+                        <filter string="picking in state" icon="terp-emblem-documents"
+                            domain="[]" context="{'group_by':'move_in_customer_state'}" />
+                        <filter string="picking out state" icon="terp-emblem-documents"
+                            domain="[]" context="{'group_by':'move_out_customer_state'}" />
+                        <filter string="Supplier picking in state" icon="terp-emblem-documents"
+                            domain="[]" context="{'group_by':'move_in_supplier_state'}" />
+                        <filter string="Supplier picking out state" icon="terp-emblem-documents"
+                            domain="[]" context="{'group_by':'move_out_supplier_state'}" /-->
                     </group>
                 </search>
             </field>
@@ -58,6 +84,7 @@
                     <button name="equivalent_products" string="Change product" type="object" icon="terp-gtk-jump-to-ltr"/>
                     <field name="equivalent_product_id" readonly="1"/>
                     <field name="claim_id" invisible="1"/>
+                    <field name="claim_type"/>
                     <field name="state"/>
                     <field name="substate_id"/>
                     <field name="name"/>
@@ -68,6 +95,13 @@
                     <button name="set_warranty" string="Compute Waranty" type="object" icon="gtk-justify-fill"/-->
                     <field name="product_returned_quantity"/>
                     <field name="claim_origine"/>
+                    <field name="supplier_id"/>
+
+                    <field name="repair_state"/>
+                    <field name="move_in_customer_state" />
+                    <field name="move_out_customer_state" />
+                    <field name="move_in_supplier_state"/>
+                    <field name="move_out_supplier_state"/>
                     <!--field name="refund_line_id"/>
                     <field name="move_in_customer_id"/>
                     <field name="move_out_customer_id"/-->
@@ -97,16 +131,23 @@
                             <field name="product_returned_quantity"/>
                             <field name="product_id"/>
                             <button name="equivalent_products" string="Change product" type="object" icon="terp-gtk-jump-to-ltr"/>
+                            <newline/>
                             <field name="equivalent_product_id" readonly="1"/>
+                            <field name="supplier_id" domain="[('supplier', '=', True)]"/>
                             <field name="prodlot_id"/>
                             <field name="unit_sale_price"/>
                             <field name="return_value"/>
                         </group>
                         <group string="Linked Document">
-                            <field name="claim_id" />
-                            <field name="repair_id" />
+                            <field name="claim_id" readonly="1"/>
+                            <field name="repair_id"/>
+                            <field name="repair_state"/>
                             <field name="move_in_customer_state" />
                             <field name="move_out_customer_state" />
+                            <field name="supplier_line_id"/>
+                            <field name="original_line_id" attrs="{'invisible': [('original_line_id', '=', False)]}"/>
+                            <field name="move_in_supplier_state" attrs="{'invisible': [('supplier_line_id', '=', False)]}"/>
+                            <field name="move_out_supplier_state" attrs="{'invisible': [('supplier_line_id', '=', False)]}"/>
                             <!--field name="invoice_line_id"/>
                             <field name="refund_line_id"/>
                             <field name="move_in_customer_id"/>
@@ -145,6 +186,7 @@
         <field name="arch" type="xml">
             <field name="stage_id" position="after">
                 <field name="section_id" />
+                <field name="claim_type" />
                 <field name="rma_cost" sum="Total cost"/>
             </field>
             <field name="name" position="before">
@@ -340,6 +382,16 @@
         <field name="model">crm.claim</field>
         <field name="inherit_id" ref="crm_claim.view_crm_case_claims_filter"/>
         <field name="arch" type="xml">
+            <filter string="Unassigned Claims" icon="terp-personal-" domain="[('user_id','=', False)]" help="Unassigned Claims" position="after">
+                <filter string="Customer claims"
+                    domain="[('claim_type','=','customer')]"
+                    separator="1" help="Customer claims"/>
+
+                <filter string="Supplier claim"
+                    domain="[('claim_type','=','supplier')]"
+                    separator="1" help="Supplier claims"/>
+            </filter>
+
             <field name="name" string="Claims" position="before">
                 <field name="number"/>
             </field>
@@ -357,6 +409,7 @@
         <field name="arch" type="xml">
             <field name="sequence" position="after">
                 <field name="show_buttons" />
+                <field name="closed" />
             </field>
         </field>
     </record>
