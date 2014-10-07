@@ -49,7 +49,7 @@ class claim_send_supplier(models.TransientModel):
         if supplier_lines.get(False, False):
             raise exceptions.except_orm(
                 _('Supplier error'),
-                _('Some of the selected lines have supplier.\nLines: ') +
+                _('Some of the selected lines not have supplier.\nLines: ') +
                 '%s, ' * len(supplier_lines[False]) %
                 tuple(x.name for x in supplier_lines[False]))
 
