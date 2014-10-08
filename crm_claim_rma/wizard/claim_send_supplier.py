@@ -52,7 +52,7 @@ class claim_send_supplier(models.TransientModel):
                 _('Some of the selected lines not have supplier.\nLines: ') +
                 '%s, ' * len(supplier_lines[False]) %
                 tuple(x.name for x in supplier_lines[False]))
-
+        claims_used = []
         for supplier in partner_obj.browse(supplier_lines.keys()):
             claims_created = claim_obj.search(
                 [('partner_id', '=', supplier.id),
@@ -71,6 +71,7 @@ class claim_send_supplier(models.TransientModel):
                     'warehouse_id': wh_ids and wh_ids[0].id,
                 }
                 claim = claim_obj.create(claim_vals)
+            claims_used.append(claim.id)
             for line in supplier_lines[supplier.id]:
                 new_line = line.copy({'claim_id': claim.id,
                                       'equivalent_product_id': False,
@@ -79,4 +80,19 @@ class claim_send_supplier(models.TransientModel):
                                       'repair_id': False,
                                       'original_line_id': line.id})
                 line.supplier_line_id = new_line
-        return {'type': 'ir.actions.act_window_close'}
+        # return {'type': 'ir.actions.act_window_close'}
+
+        res = self.env.ref('crm_claim_rma.crm_case_categ_claim_supplier')
+        action = res.read()[0]
+        action['domain'] = "[('id','in', " + str(claims_used) + ")]"
+        return action
+        """return {
+            'name': 'Claim',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'view_id': [res.id],
+            'res_model': 'crm.claim',
+            'context': "{}",
+            'domain': "[('id', 'in', " + str(claims_used) + ")]",
+            'type': 'ir.actions.act_window',
+        }"""

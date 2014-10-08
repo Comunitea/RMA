@@ -8,6 +8,9 @@
             <field name="model">claim.line</field>
             <field name="arch" type="xml">
                 <search string="Search Claims">
+                    <filter string="without supplier RMA" name="without supplier"
+                        domain="[('supplier_line_id','=',False)]"/>
+
                     <filter icon="terp-check" string="Current" name="current"
                         domain="[('state','in',('draft', 'refused', 'treated'))]"
                         separator="1" help="Draft and Open Claims" />
@@ -15,13 +18,6 @@
                         string="In Progress"
                         domain="[('state','in',('confirmed','in_to_control','in_to_treate'))]"
                         separator="1" help="In Progress Claims"/>
-
-                    <filter string="Customer claim"
-                        domain="[('claim_type','=','customer')]"
-                        separator="1" help="Customer claims"/>
-                    <filter string="Supplier claim"
-                        domain="[('claim_type','=','supplier')]"
-                        separator="1" help="Supplier claims"/>
 
                     <separator orientation="vertical"/>
                     <field name="state" select='1'/>
@@ -135,7 +131,7 @@
                             <field name="equivalent_product_id" readonly="1"/>
                             <field name="supplier_id" domain="[('supplier', '=', True)]"/>
                             <field name="prodlot_id"/>
-                            <field name="unit_sale_price"/>
+                            <!--field name="unit_sale_price"/-->
                             <field name="return_value"/>
                         </group>
                         <group string="Linked Document">
@@ -382,15 +378,6 @@
         <field name="model">crm.claim</field>
         <field name="inherit_id" ref="crm_claim.view_crm_case_claims_filter"/>
         <field name="arch" type="xml">
-            <filter string="Unassigned Claims" icon="terp-personal-" domain="[('user_id','=', False)]" help="Unassigned Claims" position="after">
-                <filter string="Customer claims"
-                    domain="[('claim_type','=','customer')]"
-                    separator="1" help="Customer claims"/>
-
-                <filter string="Supplier claim"
-                    domain="[('claim_type','=','supplier')]"
-                    separator="1" help="Supplier claims"/>
-            </filter>
 
             <field name="name" string="Claims" position="before">
                 <field name="number"/>
@@ -459,18 +446,54 @@
 
 <!-- Menu -->
         <record model="ir.actions.act_window" id="crm_claim.crm_case_categ_claim0">
-            <field name="context">{"search_default_user_id":uid, "stage_type":'claim'}</field>
+            <field name="context">{"search_default_user_id":uid, "stage_type":'claim', "claim_type": 'customer'}</field>
+            <field name="domain" eval="[('claim_type','=','customer')]" />
         </record>
 
+
+        <menuitem name="Customer claims" id="crm_claim.menu_crm_case_claims"
+            parent="base.menu_aftersale" action="crm_claim.crm_case_categ_claim0" sequence="1"/>
+
+        <record model="ir.actions.act_window" id="crm_case_categ_claim_supplier">
+            <field name="name">Claims</field>
+            <field name="res_model">crm.claim</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,calendar,form</field>
+            <field name="view_id" ref="crm_case_claims_tree_view"/>
+            <field name="context">{"search_default_user_id":uid, "stage_type":'claim', "claim_type": 'supplier'}</field>
+            <field name="domain" eval="[('claim_type','=','supplier')]" />
+            <field name="search_view_id" ref="crm_claim.view_crm_case_claims_filter"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Record and track your suppliers' claims. Claims may be linked to a sales order or a lot.You can send emails with attachments and keep the full history for a claim (emails sent, intervention type and so on).Claims may automatically be linked to an email address using the mail gateway module.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Supplier claims" id="menu_crm_case_claims_supplier"
+            parent="base.menu_aftersale" action="crm_case_categ_claim_supplier" sequence="2"/>
+
     <!-- return lines action -->
-        <record model="ir.actions.act_window" id="act_crm_case_claim_lines">
+        <record model="ir.actions.act_window" id="act_crm_case_claim_lines_customer">
             <field name="name">Claim lines</field>
             <field name="res_model">claim.line</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="domain" eval="[('claim_type','=','customer')]" />
             <field name="view_id" ref="crm_claim_line_tree_view"/>
             <field name="search_view_id" ref="view_crm_claim_lines_filter"/>
         </record>
+
+        <record model="ir.actions.act_window" id="act_crm_case_claim_lines_supplier">
+            <field name="name">Claim lines</field>
+            <field name="res_model">claim.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain" eval="[('claim_type','=','supplier')]" />
+            <field name="view_id" ref="crm_claim_line_tree_view"/>
+            <field name="search_view_id" ref="view_crm_claim_lines_filter"/>
+        </record>
+
     <!-- substates action -->
         <record id="act_crm_claim_substates" model="ir.actions.act_window">
             <field name="name">Claim line substates</field>
@@ -480,11 +503,30 @@
             <field name="search_view_id" ref="substate_search"/>
         </record>
     <!-- Menu -->
-        <menuitem name="Return lines" id="menu_crm_case_claims_claim_lines"
-            parent="base.menu_aftersale" action="act_crm_case_claim_lines" sequence="2"/>
+        <menuitem name="Return customer lines" id="menu_crm_case_claims_claim_lines_cust"
+            parent="base.menu_aftersale" action="act_crm_case_claim_lines_customer" sequence="3"/>
+
+        <menuitem name="Return supplier lines" id="menu_crm_case_claims_claim_lines_sup"
+            parent="base.menu_aftersale" action="act_crm_case_claim_lines_supplier" sequence="4"/>
+
         <menuitem name="Returned line substates" id="menu_crm_case_claims_claim_line_substates"
             parent="crm_claim.menu_config_claim" action="act_crm_claim_substates" sequence="2"/>
 
+        <menuitem name="SAT"
+            id="menu_sat"
+            sequence="80"/>
+
+        <menuitem id="base.menu_aftersale" name="After-Sale Services"
+            parent="menu_sat" sequence="1" />
+
+        <menuitem action="mrp_repair.action_repair_order_tree" id="mrp_repair.menu_repair_order" parent="base.menu_aftersale" groups="mrp.group_mrp_user" name="Repair Orders" sequence="50"/>
+
+        <menuitem id="sat_config" name="Config"
+            parent="menu_sat" sequence="2" />
+
+        <menuitem id="crm_claim.menu_config_claim" name="Claim"
+            groups="base.group_no_one"
+            parent="sat_config" sequence="1"/>
 
      </data>
 </openerp>
