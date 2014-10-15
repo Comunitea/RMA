@@ -87,6 +87,13 @@ class claim_line(orm.Model):
         result = seller.get_warranty_return_partner(cr, uid, context=context)
         return result
 
+    def _get_claim(self, cr, uid, ids, context={}):
+        result = {}
+        for claim in self.pool.get('crm.claim').browse(cr, uid, ids, context=context):
+            for line in claim.claim_line_ids:
+                result[line.id] = True
+        return result.keys()
+
     _columns = {
         'name': fields.char('Description', required=True),
         'claim_origine': fields.selection(
@@ -218,6 +225,13 @@ class claim_line(orm.Model):
         'move_out_supplier_state': fields.related(
             'supplier_line_id', 'move_out_customer_state', type='char',
             string='supplier picking out state', readonly=True),
+
+        'user_id': fields.related(
+            'claim_id', 'user_id', type='many2one', relation="res.users",
+            string='Responsible', readonly=True,
+            store={
+                'crm.claim': (_get_claim, None, 10),
+            }),
 
         'location_dest_id': fields.many2one(
             'stock.location',
