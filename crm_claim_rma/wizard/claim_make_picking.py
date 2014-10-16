@@ -232,22 +232,25 @@ class claim_make_picking(orm.TransientModel):
         # create picking
         type_ids = self.pool.get('stock.picking.type').search(
             cr, uid, [('code', '=', p_type)], context=context)
-        picking_id = picking_obj.create(
-            cr, uid,
-            {'origin': claim.number,
-             'picking_type_id': type_ids and type_ids[0],
-             'move_type': 'one',  # direct
-             'state': 'draft',
-             'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-             'partner_id': partner_id,
-             'invoice_state': "none",
-             'company_id': claim.company_id.id,
-             'location_id': wizard.claim_line_source_location.id,
-             'location_dest_id': wizard.claim_line_dest_location.id,
-             'note': note,
-             'claim_id': claim.id,
-             },
-            context=context)
+        if p_type == 'incoming' and claim.claim_type == 'supplier':
+            picking_id = False
+        else:
+            picking_id = picking_obj.create(
+                cr, uid,
+                {'origin': claim.number,
+                 'picking_type_id': type_ids and type_ids[0],
+                 'move_type': 'one',  # direct
+                 'state': 'draft',
+                 'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                 'partner_id': partner_id,
+                 'invoice_state': "none",
+                 'company_id': claim.company_id.id,
+                 'location_id': wizard.claim_line_source_location.id,
+                 'location_dest_id': wizard.claim_line_dest_location.id,
+                 'note': note,
+                 'claim_id': claim.id,
+                 },
+                context=context)
         # Create picking lines
         for wizard_claim_line in wizard.claim_line_ids:
             move_obj = self.pool.get('stock.move')
@@ -289,19 +292,23 @@ class claim_make_picking(orm.TransientModel):
             wf_service.trg_validate(uid, 'stock.picking',
                                     picking_id, 'button_confirm', cr)
             picking_obj.action_assign(cr, uid, [picking_id])
-        domain = ("[('picking_type_code', '=', '%s'), \
-                   ('partner_id', '=', %s)]" %
-                  (p_type, partner_id))
         claim_obj.write(cr, uid, [claim.id], {'rma_cost': rma_cost}, context)
-        return {
-            'name': '%s' % name,
-            'view_type': 'form',
-            'view_mode': 'form',
-            'view_id': view_id,
-            'domain': domain,
-            'res_model': model,
-            'res_id': picking_id,
-            'type': 'ir.actions.act_window',
-        }
+        if picking_id:
+            domain = ("[('picking_type_code', '=', '%s'), \
+                       ('partner_id', '=', %s)]" %
+                      (p_type, partner_id))
+
+            return {
+                'name': '%s' % name,
+                'view_type': 'form',
+                'view_mode': 'form',
+                'view_id': view_id,
+                'domain': domain,
+                'res_model': model,
+                'res_id': picking_id,
+                'type': 'ir.actions.act_window',
+            }
+        else:
+            return {'type': 'ir.actions.act_window_close'}
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
