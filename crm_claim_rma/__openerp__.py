@@ -75,7 +75,8 @@ Contributors:
                 'crm_claim',
                 'product_warranty',
                 'equivalent_products',
-                'mrp_repair'
+                'mrp_repair',
+                'stock_reserve'
                 ],
     'data': ['wizard/claim_make_picking_view.xml',
              'wizard/equivalent_products_wizard_view.xml',
@@ -88,6 +89,7 @@ Contributors:
              'res_partner_view.xml',
              'crm_claim_rma_data.xml',
              'report/crm_claim_report_view.xml',
+             'stock_reserve_view.xml',
              ],
     'test': ['test/test_invoice_refund.yml'],
     'images': ['images/product_return.png',

@@ -178,6 +178,7 @@ class claim_make_picking(orm.TransientModel):
     def action_create_picking(self, cr, uid, ids, context=None):
         picking_obj = self.pool.get('stock.picking')
         claim_obj = self.pool.get('crm.claim')
+        reserv_obj = self.pool.get('stock.reservation')
         if context is None:
             context = {}
         view_obj = self.pool.get('ir.ui.view')
@@ -271,6 +272,7 @@ class claim_make_picking(orm.TransientModel):
                  'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                  'date_expected': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                  'product_id': product,
+                 'picking_type_id': type_ids and type_ids[0],
                  'product_uom_qty': wizard_claim_line.product_returned_quantity,
                  'product_uom': wizard_claim_line.product_id.uom_id.id,
                  'partner_id': partner_id,
@@ -284,6 +286,20 @@ class claim_make_picking(orm.TransientModel):
                  'note': note,
                  },
                 context=context)
+            if p_type == 'outgoing' and wizard_claim_line.product_id.type == 'product':
+                reserv_vals = {
+                    'product_id': product,
+                    'product_uom': wizard_claim_line.product_id.uom_id.id,
+                    'product_uom_qty': wizard_claim_line.product_returned_quantity,
+                    'date_validity': False,
+                    'name': u"{} ({})".format(wizard_claim_line.claim_id.number, wizard_claim_line.product_id.name_template),
+                    'location_id': wizard.claim_line_source_location.id,
+                    'location_dest_id': wizard.claim_line_dest_location.id,
+                    'move_id': move_id,
+                    'claim_id': wizard_claim_line.claim_id.id,
+                }
+                reserve = reserv_obj.create(cr, uid, reserv_vals, context)
+                reserv_obj.reserve(cr, uid, [reserve], context=context)
             self.pool.get('claim.line').write(
                 cr, uid, wizard_claim_line.id,
                 {write_field: move_id}, context=context)
