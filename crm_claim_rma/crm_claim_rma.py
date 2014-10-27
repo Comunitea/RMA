@@ -481,6 +481,10 @@ class crm_claim(orm.Model):
             required=True,
             select=True,
             help="Company internal claim unique number"),
+        'supplier_number': fields.char(
+            'Supplier Number',
+            select=True,
+            help="Supplier claim number"),
         'claim_type': fields.selection(
             [('customer', 'Customer'),
              ('supplier', 'Supplier')],
