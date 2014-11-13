@@ -24,6 +24,7 @@
                     <field name="substate_id" select='1'/>
                     <field name="name" select='1'/>
                     <field name="supplier_id" select='1'/>
+                    <field name="partner_id" select='1'/>
                     <field name="user_id" select='1'/>
                     <!--field name="warning" select='1'/>
                     <field name="invoice_line_id" select='1'/>
@@ -44,6 +45,9 @@
                         <filter string="Supplier"
                             domain="[]" help="Supplier"
                             context="{'group_by':'supplier_id'}" />
+                        <filter string="Customer"
+                            domain="[]" help="Customer"
+                            context="{'group_by':'partner_id'}" />
                         <filter string="Invoice" icon="terp-dolar"
                             domain="[]" help="Invoice"
                             context="{'group_by':'invoice_id'}" />
@@ -82,6 +86,7 @@
                     <field name="product_id"/>
                     <button name="equivalent_products" string="Change product" type="object" icon="terp-gtk-jump-to-ltr"/>
                     <field name="equivalent_product_id" readonly="1"/>
+                    <field name="partner_id"/>
                     <field name="claim_id" invisible="1"/>
                     <field name="claim_type"/>
                     <field name="state"/>
@@ -262,7 +267,7 @@
         </field>
     </record>
 
- 
+
 
 <!-- Right side link to orders -->
         <act_window

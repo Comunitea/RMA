@@ -31,6 +31,16 @@ from openerp.tools import (DEFAULT_SERVER_DATE_FORMAT,
 from openerp.tools.translate import _
 from openerp import SUPERUSER_ID, api
 
+REPAIR_SELECTION =[
+            ('draft', 'Quotation'),
+            ('cancel', 'Cancelled'),
+            ('confirmed', 'Confirmed'),
+            ('under_repair', 'Under Repair'),
+            ('ready', 'Ready to Repair'),
+            ('2binvoiced', 'To be Invoiced'),
+            ('invoice_except', 'Invoice Exception'),
+            ('done', 'Repaired')
+            ]
 
 class substate_substate(orm.Model):
     """ To precise a state (state=refused; substates= reason 1, 2,...) """
@@ -205,7 +215,8 @@ class claim_line(orm.Model):
             'move_out_customer_id', 'state', type='char',
             string='picking out state', readonly=True),
         'repair_id': fields.many2one('mrp.repair', 'Repair'),
-        'repair_state': fields.related('repair_id', 'state', type='char',
+        'repair_state': fields.related('repair_id', 'state', type='selection',
+                                       selection = REPAIR_SELECTION,
                                        string='repair state', readonly=True),
         'supplier_id': fields.many2one('res.partner', 'Supplier'),
 
@@ -229,6 +240,13 @@ class claim_line(orm.Model):
         'user_id': fields.related(
             'claim_id', 'user_id', type='many2one', relation="res.users",
             string='Responsible', readonly=True,
+            store={
+                'crm.claim': (_get_claim, None, 10),
+            }),
+
+        'partner_id': fields.related(
+            'claim_id', 'partner_id', type='many2one', relation="res.partner",
+            string='Customer', readonly=True,
             store={
                 'crm.claim': (_get_claim, None, 10),
             }),
