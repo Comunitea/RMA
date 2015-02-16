@@ -353,9 +353,7 @@ class claim_line(orm.Model):
         if prod:
             seller = prod.seller_id
             if seller:
-                return_type = seller.warranty_return_partner
-                if return_type != 'company':
-                    location_dest_id = seller.name.property_stock_supplier.id
+                location_dest_id = seller.property_stock_supplier.id
         return location_dest_id
 
     # Method to calculate warranty return address
