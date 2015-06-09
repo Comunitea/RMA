@@ -53,22 +53,23 @@ class stock_move(orm.Model):
         return move_id
 
 
-    @api.one
+    @api.multi
     def write(self, vals):
-        if self.picking_type_id.code == 'incoming':
-            if 'date_expected' in vals.keys():
-                reservations = self.env['stock.reservation'].search(
-                    [('product_id', '=', self.product_id.id),
-                     ('state', '=', 'confirmed')])
-                # no se necesita hacer browse.
-                # reservations = self.env['stock.reservation'].browse(reservation_ids)
-                for reservation in reservations:
-                    reservation.date_planned = self.date_expected
-                    if not reservation.claim_id:
-                        continue
-                    followers = reservation.claim_id.message_follower_ids
-                    sale.message_post(body="The date planned was changed.",
-                                      subtype='mt_comment',
-                                      partner_ids=followers)
+        for pick in self:
+            if pick.picking_type_id.code == 'incoming':
+                if 'date_expected' in vals.keys():
+                    reservations = self.env['stock.reservation'].search(
+                        [('product_id', '=', pick.product_id.id),
+                         ('state', '=', 'confirmed')])
+                    # no se necesita hacer browse.
+                    # reservations = self.env['stock.reservation'].browse(reservation_ids)
+                    for reservation in reservations:
+                        reservation.date_planned = pick.date_expected
+                        if not reservation.claim_id:
+                            continue
+                        followers = reservation.claim_id.message_follower_ids
+                        sale.message_post(body="The date planned was changed.",
+                                          subtype='mt_comment',
+                                          partner_ids=followers)
         return super(stock_move, self).write(vals)
 
