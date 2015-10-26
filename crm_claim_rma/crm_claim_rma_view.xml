@@ -208,7 +208,7 @@
                 <field name="invoice_type"/>
                 <group colspan="4" col="4">
                     <field name="invoice_method" attrs="{'invisible': [('invoice_type', '!=', 'invoice')]}" colspan="2"/>
-                    <button type="action" name="%(action_mrp_repair_invoice_from_claim_view)d" string="Invoice" icon="gtk-execute" colspan="2"/>
+                    <button type="action" name="%(action_mrp_repair_invoice_from_claim_view)d" string="Invoice" icon="gtk-execute" colspan="2" attrs="{'invisible': ['|',('invoice_type', '!=', 'invoice'),('invoice_method','=','none')]}"/>
                 </group>
             </field>
             <page string="Follow Up" position="before">
