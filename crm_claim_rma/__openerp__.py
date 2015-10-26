@@ -82,6 +82,7 @@ Contributors:
              'wizard/equivalent_products_wizard_view.xml',
              'wizard/claim_make_repair_view.xml',
              'wizard/claim_send_supplier_view.xml',
+             'wizard/repair_invoice_view.xml',
              'crm_claim_rma_view.xml',
              'security/ir.model.access.csv',
              'account_invoice_view.xml',
@@ -90,6 +91,7 @@ Contributors:
              'crm_claim_rma_data.xml',
              'report/crm_claim_report_view.xml',
              'stock_reserve_view.xml',
+             'mrp_repair_view.xml'
              ],
     'test': ['test/test_invoice_refund.yml'],
     'images': ['images/product_return.png',

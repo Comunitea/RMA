@@ -59,6 +59,7 @@ WARNING: Use with caution, this module is currently not yet completely debugged 
     'stock_view.xml',
     'stock_data.xml',
     'claim_rma_view.xml',
+    'mrp_repair_view.xml'
  ],
  'installable': True,
  'application': True,

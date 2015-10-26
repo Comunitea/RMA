@@ -271,6 +271,7 @@ class claim_line(orm.Model):
 
     _defaults = {
         'state': 'draft',
+        'claim_origine': 'none'
     }
 
     @staticmethod
@@ -437,6 +438,8 @@ class claim_line(orm.Model):
 class crm_claim(orm.Model):
     _inherit = 'crm.claim'
 
+    _rec_name = 'number'
+
     @api.onchange('claim_type')
     def onchange_claim_type(self):
         if self.claim_type == 'customer':
@@ -462,15 +465,6 @@ class crm_claim(orm.Model):
                 _('Error!'),
                 _('There is no warehouse for the current user\'s company.'))
         return wh_ids[0]
-
-    def name_get(self, cr, uid, ids, context=None):
-        res = []
-        if isinstance(ids, (int, long)):
-            ids = [ids]
-        for claim in self.browse(cr, uid, ids, context=context):
-            number = claim.number and str(claim.number) or ''
-            res.append((claim.id, '[' + number + '] ' + claim.name))
-        return res
 
     def create(self, cr, uid, vals, context=None):
         if ('number' not in vals) or (vals.get('number') == '/'):
@@ -533,18 +527,48 @@ class crm_claim(orm.Model):
                                              string="show buttons",
                                              readonly=True),
         'rma_cost': fields.float('RMA cost'),
+        'invoice_type': fields.selection([('invoice', 'Invoice'),
+                                          ('refund', 'Refund')],
+                                         'Invoice type', required=True),
+        'invoice_method': fields.selection([('none', 'Not invoice'),
+                                            ('b4repair', 'Before repair'),
+                                            ('after_repair', 'After repair')],
+                                           'Invoice method')
     }
 
     _defaults = {
         'number': '/',
         'claim_type': 'customer',
         'warehouse_id': _get_default_warehouse,
+        'invoice_method': 'none',
+        'invoice_type': 'invoice'
     }
 
     _sql_constraints = [
         ('number_uniq', 'unique(number, company_id)',
          'Number/Reference must be unique per Company!'),
     ]
+
+    def write(self, cr, uid, ids, vals, context=None):
+        if context is None: context = {}
+        if vals.get('partner_id', False) or vals.get('invoice_method', False):
+            update_vals = {}
+            for claim in self.browse(cr, uid, ids):
+                if vals.get('partner_id', False) and vals['partner_id'] != \
+                        claim.partner_id.id:
+                    update_vals['partner_id'] = vals['partner_id']
+                if vals.get('invoice_method', False) and \
+                        vals['invoice_method'] != claim.invoice_method:
+                    update_vals['invoice_method'] = vals['invoice_method']
+
+        res = super(crm_claim, self).write(cr, uid, ids, vals, context=context)
+        if update_vals:
+            for claim in self.browse(cr, uid, ids):
+                for line in claim.claim_line_ids:
+                    if line.repair_id and line.repair_id.state == 'draft':
+                        line.repair_id.write(update_vals)
+
+        return res
 
     def onchange_partner_address_id(self, cr, uid, ids, add, email=False,
                                     context=None):
