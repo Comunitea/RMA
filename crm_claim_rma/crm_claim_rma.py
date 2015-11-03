@@ -551,8 +551,8 @@ class crm_claim(orm.Model):
 
     def write(self, cr, uid, ids, vals, context=None):
         if context is None: context = {}
+        update_vals = {}
         if vals.get('partner_id', False) or vals.get('invoice_method', False):
-            update_vals = {}
             for claim in self.browse(cr, uid, ids):
                 if vals.get('partner_id', False) and vals['partner_id'] != \
                         claim.partner_id.id:
