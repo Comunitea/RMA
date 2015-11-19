@@ -25,7 +25,6 @@ msgstr "# Emails"
 msgid "<p class=\"oe_view_nocontent_create\">\n"
 "                    Record and track your suppliers' claims. Claims may be linked to a sales order or a lot.You can send emails with attachments and keep the full history for a claim (emails sent, intervention type and so on).Claims may automatically be linked to an email address using the mail gateway module.\n"
 "                </p>\n"
-"            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
 "                    Registra y sigue tus reclamaciones a proveedores. Las reclamaciones pueden relacionarse con pedidos de venta o un nº de serie. Puede enviar emails con adjuntos y mantener el historial de comunicación completo para una reclamación (emails enviados, tipos intervención y demás). Las reclamaciones pueden automáticamente enlazarse a una dirección de email, usando el módulo de pasarela de correo.\n"
 "                </p>\n"
@@ -76,6 +75,16 @@ msgid "Any repair to invoice in this claim"
 msgstr "Ninguna reparación para facturar en esta reclamación"
 
 #. module: crm_claim_rma
+#: code:addons/crm_claim_rma/crm_claim_rma.py:48
+#: selection:claim.line,move_in_customer_state:0
+#: selection:claim.line,move_in_supplier_state:0
+#: selection:claim.line,move_out_customer_state:0
+#: selection:claim.line,move_out_supplier_state:0
+#, python-format
+msgid "Available"
+msgstr "Disponible"
+
+#. module: crm_claim_rma
 #: selection:crm.claim,invoice_method:0
 msgid "Before repair"
 msgstr "Antes de la reparación"
@@ -105,9 +114,16 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #. module: crm_claim_rma
+#: code:addons/crm_claim_rma/crm_claim_rma.py:36
+#: code:addons/crm_claim_rma/crm_claim_rma.py:45
+#: selection:claim.line,move_in_customer_state:0
+#: selection:claim.line,move_in_supplier_state:0
+#: selection:claim.line,move_out_customer_state:0
+#: selection:claim.line,move_out_supplier_state:0
 #: selection:claim.line,repair_state:0
+#, python-format
 msgid "Cancelled"
-msgstr "Cancelada"
+msgstr "Cancelado"
 
 #. module: crm_claim_rma
 #: code:addons/crm_claim_rma/crm_claim_rma.py:304
@@ -385,6 +401,16 @@ msgid "Different Item"
 msgstr "Artículo diferente"
 
 #. module: crm_claim_rma
+#: code:addons/crm_claim_rma/crm_claim_rma.py:48
+#: selection:claim.line,move_in_customer_state:0
+#: selection:claim.line,move_in_supplier_state:0
+#: selection:claim.line,move_out_customer_state:0
+#: selection:claim.line,move_out_supplier_state:0
+#, python-format
+msgid "Done"
+msgstr "Realizado"
+
+#. module: crm_claim_rma
 #: selection:claim.line,state:0
 msgid "Draft"
 msgstr "Borrador"
@@ -522,7 +548,9 @@ msgid "Invoice"
 msgstr "Factura"
 
 #. module: crm_claim_rma
+#: code:addons/crm_claim_rma/crm_claim_rma.py:41
 #: selection:claim.line,repair_state:0
+#, python-format
 msgid "Invoice Exception"
 msgstr "Excepción factura"
 
@@ -700,6 +728,16 @@ msgid "Name"
 msgstr "Nombre"
 
 #. module: crm_claim_rma
+#: code:addons/crm_claim_rma/crm_claim_rma.py:45
+#: selection:claim.line,move_in_customer_state:0
+#: selection:claim.line,move_in_supplier_state:0
+#: selection:claim.line,move_out_customer_state:0
+#: selection:claim.line,move_out_supplier_state:0
+#, python-format
+msgid "New"
+msgstr "Nuevo"
+
+#. module: crm_claim_rma
 #: view:crm.claim:crm_claim_rma.crm_claim_rma_form_view
 msgid "New Delivery"
 msgstr "Nueva entrega"
@@ -844,7 +882,9 @@ msgid "Quantity returned * Unit sold price"
 msgstr "Cantidad devuelta * precio de venta unitario"
 
 #. module: crm_claim_rma
+#: code:addons/crm_claim_rma/crm_claim_rma.py:35
 #: selection:claim.line,repair_state:0
+#, python-format
 msgid "Quotation"
 msgstr "Presupuesto"
 
@@ -867,7 +907,9 @@ msgid "RMA cost"
 msgstr "Coste RMA"
 
 #. module: crm_claim_rma
+#: code:addons/crm_claim_rma/crm_claim_rma.py:39
 #: selection:claim.line,repair_state:0
+#, python-format
 msgid "Ready to Repair"
 msgstr "Listo para reparar"
 
@@ -928,7 +970,9 @@ msgid "Repair Order"
 msgstr "Orden reparación"
 
 #. module: crm_claim_rma
+#: code:addons/crm_claim_rma/crm_claim_rma.py:42
 #: selection:claim.line,repair_state:0
+#, python-format
 msgid "Repaired"
 msgstr "Reparado"
 
@@ -1252,7 +1296,9 @@ msgid "This address will be used to deliver repaired or replacementproducts."
 msgstr "Esta dirección será usada para entregar las reparaciones o substituciones."
 
 #. module: crm_claim_rma
+#: code:addons/crm_claim_rma/crm_claim_rma.py:40
 #: selection:claim.line,repair_state:0
+#, python-format
 msgid "To be Invoiced"
 msgstr "Para ser facturado"
 
@@ -1287,7 +1333,9 @@ msgid "Total return"
 msgstr "Total devuelto"
 
 #. module: crm_claim_rma
+#: code:addons/crm_claim_rma/crm_claim_rma.py:38
 #: selection:claim.line,repair_state:0
+#, python-format
 msgid "Under Repair"
 msgstr "En reparación"
 
@@ -1305,6 +1353,26 @@ msgstr "Precio de venta unitario del producto. Auto-completado si la devolución
 #: field:crm.claim.cost.report,user_id:0
 msgid "User"
 msgstr "Usuario"
+
+#. module: crm_claim_rma
+#: code:addons/crm_claim_rma/crm_claim_rma.py:46
+#: selection:claim.line,move_in_customer_state:0
+#: selection:claim.line,move_in_supplier_state:0
+#: selection:claim.line,move_out_customer_state:0
+#: selection:claim.line,move_out_supplier_state:0
+#, python-format
+msgid "Waiting Another Move"
+msgstr "Esperando otro movimiento"
+
+#. module: crm_claim_rma
+#: code:addons/crm_claim_rma/crm_claim_rma.py:47
+#: selection:claim.line,move_in_customer_state:0
+#: selection:claim.line,move_in_supplier_state:0
+#: selection:claim.line,move_out_customer_state:0
+#: selection:claim.line,move_out_supplier_state:0
+#, python-format
+msgid "Waiting Availability"
+msgstr "Esperando Disponibilidad"
 
 #. module: crm_claim_rma
 #: field:crm.claim,warehouse_id:0

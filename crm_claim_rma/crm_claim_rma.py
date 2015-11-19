@@ -32,15 +32,20 @@ from openerp.tools.translate import _
 from openerp import SUPERUSER_ID, api
 
 REPAIR_SELECTION =[
-            ('draft', 'Quotation'),
-            ('cancel', 'Cancelled'),
-            ('confirmed', 'Confirmed'),
-            ('under_repair', 'Under Repair'),
-            ('ready', 'Ready to Repair'),
-            ('2binvoiced', 'To be Invoiced'),
-            ('invoice_except', 'Invoice Exception'),
-            ('done', 'Repaired')
+            ('draft', _('Quotation')),
+            ('cancel', _('Cancelled')),
+            ('confirmed', _('Confirmed')),
+            ('under_repair', _('Under Repair')),
+            ('ready', _('Ready to Repair')),
+            ('2binvoiced', _('To be Invoiced')),
+            ('invoice_except', _('Invoice Exception')),
+            ('done', _('Repaired'))
             ]
+
+MOVE_STATE_SELECTION = [('draft', _('New')), ('cancel', _('Cancelled')),
+                        ('waiting', _('Waiting Another Move')),
+                        ('confirmed', _('Waiting Availability')),
+                        ('assigned', _('Available')), ('done', _('Done'))]
 
 class substate_substate(orm.Model):
     """ To precise a state (state=refused; substates= reason 1, 2,...) """
@@ -209,11 +214,13 @@ class claim_line(orm.Model):
             help='The move line related to the returned product'),
 
         'move_in_customer_state': fields.related(
-            'move_in_customer_id', 'state', type='char',
-            string='picking in state', readonly=True),
+            'move_in_customer_id', 'state', type='selection',
+            string='picking in state', readonly=True,
+            selection=MOVE_STATE_SELECTION),
         'move_out_customer_state': fields.related(
-            'move_out_customer_id', 'state', type='char',
-            string='picking out state', readonly=True),
+            'move_out_customer_id', 'state', type='selection',
+            string='picking out state', readonly=True,
+            selection=MOVE_STATE_SELECTION),
         'repair_id': fields.many2one('mrp.repair', 'Repair'),
         'repair_state': fields.related('repair_id', 'state', type='selection',
                                        selection = REPAIR_SELECTION,
@@ -230,12 +237,14 @@ class claim_line(orm.Model):
                                      string='Claim type', readonly=True),
 
         'move_in_supplier_state': fields.related(
-            'supplier_line_id', 'move_in_customer_state', type='char',
-            string='supplier picking in state', readonly=True),
+            'supplier_line_id', 'move_in_customer_state', type='selection',
+            string='supplier picking in state', readonly=True,
+            selection=MOVE_STATE_SELECTION),
 
         'move_out_supplier_state': fields.related(
-            'supplier_line_id', 'move_out_customer_state', type='char',
-            string='supplier picking out state', readonly=True),
+            'supplier_line_id', 'move_out_customer_state', type='selection',
+            string='supplier picking out state', readonly=True,
+            selection=MOVE_STATE_SELECTION),
 
         'user_id': fields.related(
             'claim_id', 'user_id', type='many2one', relation="res.users",
@@ -271,7 +280,8 @@ class claim_line(orm.Model):
 
     _defaults = {
         'state': 'draft',
-        'claim_origine': 'none'
+        'claim_origine': 'none',
+        'product_returned_quantity': 1.0
     }
 
     @staticmethod
