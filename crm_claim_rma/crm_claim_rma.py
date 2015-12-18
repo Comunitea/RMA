@@ -264,6 +264,10 @@ class claim_line(orm.Model):
             'stock.location',
             string='Return Stock Location',
             help='The return stock location of the returned product'),
+
+        'internal_description': fields.text(
+            string='Internal Description'
+        )
     }
 
     @api.onchange('product_id')
