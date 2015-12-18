@@ -102,6 +102,33 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="crm_claim_line_tree_view2">
+            <field name="name">CRM - Claims Tree</field>
+            <field name="model">claim.line</field>
+            <field eval="99" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Returned lines">
+                    <field name="claim_id"/>
+                    <field name="product_id"/>
+                    <button name="equivalent_products" string="Change product" type="object" icon="terp-gtk-jump-to-ltr"/>
+                    <field name="equivalent_product_id" readonly="1"/>
+                    <field name="name"/>
+                    <field name="product_returned_quantity"/>
+                    <field name="prodlot_id" domain="[('product_id', '=', product_id)]"/>
+                    <field name="claim_origine"/>
+                    <field name="repair_id" readonly="1"/>
+                    <field name="repair_state"/>
+                    <field name="state" readonly="1"/>
+                    <field name="substate_id"/>
+                    <field name="move_in_customer_state"/>
+                    <field name="move_out_customer_state"/>
+                    <field name="supplier_id"/>
+                    <field name="internal_description"/>
+                    <button name="%(action_claim_make_repair)d" type="action" icon="gtk-execute" string="Create repair" attrs="{'invisible': [('repair_id', '!=', False)]}"/>
+                </tree>
+            </field>
+        </record>
+
         <!-- FORM -->
         <record model="ir.ui.view" id="crm_claim_line_form_view">
             <field name="name">CRM - Claim product return line Form</field>
@@ -491,7 +518,7 @@
             <field name="view_mode">tree,form</field>
             <field name="domain" eval="[('claim_type','=','customer')]" />
             <field name="context">{"search_default_user_id":uid}</field>
-            <field name="view_id" ref="crm_claim_line_tree_view"/>
+            <field name="view_id" ref="crm_claim_line_tree_view2"/>
             <field name="search_view_id" ref="view_crm_claim_lines_filter"/>
         </record>
 
