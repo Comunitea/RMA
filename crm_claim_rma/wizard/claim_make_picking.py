@@ -260,10 +260,15 @@ class claim_make_picking(orm.TransientModel):
                     wizard_claim_line.equivalent_product_id:
                 product = wizard_claim_line.equivalent_product_id
             qty = wizard_claim_line.product_returned_quantity
-            rma_cost += (p_type == u'outgoing' or
-                         context.get('picking_type') == 'loss') and \
-                        (product.standard_price * qty) or \
-                        -(product.standard_price * qty)
+            if claim.claim_type == u'customer':
+                if wizard_claim_line.equivalent_product_id:
+                    if wizard_claim_line.equivalent_product_id.id != \
+                        wizard_claim_line.product_id.id:
+                            rma_cost += (p_type == u'outgoing' or
+                                        context.get('picking_type') == 'loss') \
+                                        and (product.standard_price * qty) or \
+                                        rma_cost
+
             product = product.id
             move_id = move_obj.create(
                 cr, uid,
