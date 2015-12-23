@@ -64,6 +64,13 @@ class equivalent_products_wizard(orm.TransientModel):
         'line_id': fields.many2one('claim.line', 'Line')
     }
 
+    def default_get(self, cr, uid, fields, context=None):
+        res = super(equivalent_products_wizard, self).default_get(cr, uid, fields, context=context)
+        if context.get('line_id'):
+            claim_line_id = self.pool.get('claim.line').browse(cr, uid, context['line_id'])
+            res['product_id'] = claim_line_id.product_id.id
+        return res
+
     def fields_view_get(self, cr, uid, view_id=None, view_type='form',
                         context=None, toolbar=False, submenu=False):
         """
