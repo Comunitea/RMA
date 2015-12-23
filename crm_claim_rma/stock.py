@@ -21,7 +21,7 @@
 #
 ##############################################################################
 from openerp.osv import fields, orm
-from openerp import api
+from openerp import api, fields as fields2
 
 class stock_picking(orm.Model):
 
@@ -39,6 +39,40 @@ class stock_picking(orm.Model):
 class stock_move(orm.Model):
 
     _inherit = "stock.move"
+
+    claim_line_id = fields2.Many2one('claim.line', 'Claim Line')
+
+    @api.multi
+    def action_done(self):
+        res = super(stock_move, self).action_done()
+
+        for move in self:
+            if move.claim_line_id:
+                claim_line_obj = self.env['claim.line'].browse(move.claim_line_id.id)
+                if claim_line_obj.claim_type == u'customer':
+                    qty = claim_line_obj.product_returned_quantity
+                    loc_lost = self.env.ref('crm_rma_advance_location.stock_location_carrier_loss')
+                    claim_obj = claim_line_obj.claim_id
+                    if claim_line_obj.equivalent_product_id and \
+                        claim_line_obj.equivalent_product_id != claim_line_obj.product_id:
+                        rma_cost = claim_obj.rma_cost
+                        if move.location_dest_id == loc_lost:
+                            standard_price = claim_line_obj.product_id.standard_price
+                            rma_cost += (move.picking_type_code == u'incoming') \
+                            and (standard_price * qty) or 0.0
+                        else:
+                            standard_price = claim_line_obj.equivalent_product_id.standard_price
+                            rma_cost += (move.picking_type_code == u'outgoing') \
+                            and (standard_price * qty) or 0.0
+                        claim_obj.rma_cost = rma_cost
+                    elif  move.location_dest_id == loc_lost:
+                        standard_price = claim_line_obj.product_id.standard_price
+                        rma_cost = claim_obj.rma_cost
+                        rma_cost += (move.picking_type_code == u'incoming') \
+                                     and (standard_price * qty) or 0.0
+                        claim_obj.rma_cost = rma_cost
+
+        return res
 
     def create(self, cr, uid, vals, context=None):
         move_id = super(stock_move, self
@@ -72,4 +106,3 @@ class stock_move(orm.Model):
                                           subtype='mt_comment',
                                           partner_ids=followers)
         return super(stock_move, self).write(vals)
-

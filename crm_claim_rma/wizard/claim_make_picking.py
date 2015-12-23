@@ -260,15 +260,7 @@ class claim_make_picking(orm.TransientModel):
                     wizard_claim_line.equivalent_product_id:
                 product = wizard_claim_line.equivalent_product_id
             qty = wizard_claim_line.product_returned_quantity
-            if claim.claim_type == u'customer':
-                if wizard_claim_line.equivalent_product_id:
-                    if wizard_claim_line.equivalent_product_id.id != \
-                        wizard_claim_line.product_id.id:
-                            rma_cost += (p_type == u'outgoing' or
-                                        context.get('picking_type') == 'loss') \
-                                        and (product.standard_price * qty) or \
-                                        rma_cost
-
+            
             product = product.id
             move_id = move_obj.create(
                 cr, uid,
@@ -289,6 +281,7 @@ class claim_make_picking(orm.TransientModel):
                  'location_id': wizard.claim_line_source_location.id,
                  'location_dest_id': wizard.claim_line_dest_location.id,
                  'note': note,
+                 'claim_line_id': wizard_claim_line.id
                  },
                 context=context)
             if p_type == 'outgoing' and wizard_claim_line.product_id.type == 'product':
@@ -308,6 +301,7 @@ class claim_make_picking(orm.TransientModel):
             self.pool.get('claim.line').write(
                 cr, uid, wizard_claim_line.id,
                 {write_field: move_id}, context=context)
+
         wf_service = netsvc.LocalService("workflow")
         if picking_id:
             wf_service.trg_validate(uid, 'stock.picking',
