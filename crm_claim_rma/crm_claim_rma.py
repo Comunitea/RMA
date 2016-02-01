@@ -112,7 +112,9 @@ class claim_line(orm.Model):
     _columns = {
         'name': fields.char('Description', required=True),
         'claim_origine': fields.selection(
-            [('none', 'Not specified'),
+            [('broken_down', 'Broken down product'),
+             ('not_appropiate', 'Not appropiate product'),
+             ('none', 'Not specified'),
              ('legal', 'Legal retractation'),
              ('cancellation', 'Order cancellation'),
              ('damaged', 'Damaged delivered product'),
@@ -284,7 +286,7 @@ class claim_line(orm.Model):
 
     _defaults = {
         'state': 'draft',
-        'claim_origine': 'none',
+        'claim_origine': 'broken_down',
         'product_returned_quantity': 1.0
     }
 
