@@ -53,8 +53,7 @@ class stock_move(orm.Model):
                     qty = claim_line_obj.product_returned_quantity
                     loc_lost = self.env.ref('crm_rma_advance_location.stock_location_carrier_loss')
                     claim_obj = claim_line_obj.claim_id
-                    if claim_line_obj.equivalent_product_id and \
-                        claim_line_obj.equivalent_product_id != claim_line_obj.product_id:
+                    if claim_line_obj.equivalent_product_id:
                         rma_cost = claim_obj.rma_cost
                         if move.location_dest_id == loc_lost:
                             standard_price = claim_line_obj.product_id.standard_price
