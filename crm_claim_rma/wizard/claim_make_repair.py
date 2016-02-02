@@ -47,6 +47,7 @@ class claim_make_repair(models.TransientModel):
             'location_id': self.line_id.claim_id.warehouse_id.lot_rma_id.id,
             'location_dest_id': self.line_id.claim_id.warehouse_id.lot_rma_id.id,
             'invoice_method': 'none',
+            'partner_invoice_id': self.line_id.claim_id.partner_id.id,
         }
         repair = repair_obj.create(repair_dict)
         self.line_id.repair_id = repair
