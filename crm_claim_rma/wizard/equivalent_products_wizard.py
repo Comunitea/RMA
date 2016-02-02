@@ -61,7 +61,11 @@ class equivalent_products_wizard(orm.TransientModel):
                                        relation='product.product',
                                        string='Products'),
         'product_id': fields.many2one('product.product', 'Product selected'),
-        'line_id': fields.many2one('claim.line', 'Line')
+        'line_id': fields.many2one('claim.line', 'Line'),
+        'real_stock': fields.float('Real Stock'),
+        'virtual_stock': fields.float('Virtual Stock'),
+        'real_stock': fields.float("Real Stock", readonly=True),
+        'virtual_stock': fields.float("Virtual Stock", readonly=True),
     }
 
     def default_get(self, cr, uid, fields, context=None):
@@ -120,6 +124,21 @@ class equivalent_products_wizard(orm.TransientModel):
                                          True)[ids[0]]
         return {'value': {'product_ids': product_ids},
                 'domain': {'product_id': [('id', 'in', product_ids)]}}
+
+    def onchange_product_id(self, cr, uid, ids, product_id, context=None):
+        wiz = self.browse(cr, uid, ids[0])
+        prod_eq = [x.id for x in wiz.product_ids]
+        if product_id not in prod_eq:
+            raise orm.except_orm(_('Error'),
+                                 _('El producto no es equivalente'))
+        prod_obj = self.pool.get('product.product')
+        prod_id = prod_obj.browse(cr, uid, product_id)
+        virtual_stock = prod_id.virtual_available
+        real_stock = prod_id.qty_available
+        return {
+            'value': {'virtual_stock': virtual_stock,
+                      'real_stock': real_stock}
+        }
 
     def select_product(self, cr, uid, ids, context=None):
         wiz = self.browse(cr, uid, ids[0], context)
