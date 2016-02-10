@@ -40,7 +40,7 @@ class equivalent_products_wizard(orm.TransientModel):
             if not onchange:
                 tag_ids = [x.id for x in wiz.tag_ids]
             product_ids = set(product_obj.search(cr, uid,
-                                                 [('sale_ok', '=', True)],
+                                                 [('type', '!=', "service")],
                                                  context=context))
             # se buscan todos los product.tag que coincidan con los del wiz
             for tag in tag_wiz_obj.browse(cr, uid, tag_ids, context):
@@ -49,7 +49,7 @@ class equivalent_products_wizard(orm.TransientModel):
                                          context=context)
                 products = product_obj.search(cr, uid,
                                               [('tag_ids', 'in', tag_ids),
-                                               ('sale_ok', '=', True)],
+                                               ('type', '!=', "service")],
                                               context=context)
                 product_ids = product_ids & set(products)
             res[wiz.id] = list(product_ids)
@@ -93,7 +93,7 @@ class equivalent_products_wizard(orm.TransientModel):
         if line_id:
             # se buscan productos con los mismos tags que el de la linea
             product_ids = set(product_obj.search(cr, uid,
-                                                 [('sale_ok', '=', True)],
+                                                 [('type', '!=', "service")],
                                                  context=context))
             line = self.pool.get('claim.line').browse(cr, uid, line_id,
                                                       context)
@@ -101,7 +101,7 @@ class equivalent_products_wizard(orm.TransientModel):
             for tag in product.tag_ids:
                 products = product_obj.search(cr, uid,
                                               [('tag_ids', 'in', [tag.id]),
-                                               ('sale_ok', '=', True)],
+                                               ('type', '!=', "service")],
                                               context=context)
                 product_ids = product_ids & set(products)
 
