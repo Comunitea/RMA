@@ -82,16 +82,10 @@ class claim_make_picking(orm.TransientModel):
         warehouse_obj = self.pool.get('stock.warehouse')
         warehouse_id = context.get('warehouse_id')
         if context.get('picking_type') == 'out':
-            if context.get('type') == 'supplier':
-                loc_id = warehouse_obj.read(
-                    cr, uid, warehouse_id,
-                    ['lot_rma_id'],
-                    context=context)['lot_rma_id'][0]
-            if context.get('type') == 'customer':
-                loc_id = warehouse_obj.read(
-                    cr, uid, warehouse_id,
-                    ['lot_stock_id'],
-                    context=context)['lot_stock_id'][0]
+            loc_id = warehouse_obj.read(
+                cr, uid, warehouse_id,
+                ['lot_rma_id'],
+                context=context)['lot_rma_id'][0]
 
         elif context.get('picking_type') == 'in':
             if context.get('type') == 'supplier':
@@ -204,7 +198,8 @@ class claim_make_picking(orm.TransientModel):
         claim = claim_obj.browse(cr, uid, context['active_id'],
                                  context=context)
         rma_cost = claim.rma_cost
-        partner_id = claim.partner_id.id
+        partner_id = claim.delivery_address_id and \
+            claim.delivery_address_id.id or partner_id.id
         line_ids = [x.id for x in wizard.claim_line_ids]
         # In case of product return, we don't allow one picking for various
         # product if location are different
@@ -260,7 +255,7 @@ class claim_make_picking(orm.TransientModel):
                     wizard_claim_line.equivalent_product_id:
                 product = wizard_claim_line.equivalent_product_id
             qty = wizard_claim_line.product_returned_quantity
-            
+
             product = product.id
             move_id = move_obj.create(
                 cr, uid,

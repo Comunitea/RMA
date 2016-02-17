@@ -43,7 +43,7 @@ class claim_make_repair(models.TransientModel):
             'product_uom': self.line_id.product_id.uom_id.id,
             'product_qty': self.line_id.product_returned_quantity,
             'partner_id': self.line_id.claim_id.partner_id.id,
-            'address_id': self.line_id.claim_id.partner_id.id,
+            'address_id': self.line_id.claim_id.delivery_address_id.id,
             'location_id': self.line_id.claim_id.warehouse_id.lot_rma_id.id,
             'location_dest_id': self.line_id.claim_id.warehouse_id.lot_rma_id.id,
             'invoice_method': 'none',

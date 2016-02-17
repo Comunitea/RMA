@@ -245,7 +245,7 @@
                     <group name="Product Return">
                         <separator string="Product Return" colspan="4"/>
                         <group>
-                            <!--field name="delivery_address_id" context="{'tree_view_ref': 'crm_claim_rma.view_partner_contact_tree', 'search_default_parent_id': partner_id}" required="1"/-->
+                            <field name="delivery_address_id" context="{'tree_view_ref': 'crm_claim_rma.view_partner_contact_tree', 'search_default_parent_id': partner_id}" required="1"/>
                         </group>
                         <group>
                             <!-- Place for mass return button from crm_rma_lot_mass_return -->
@@ -483,7 +483,7 @@
 
 <!-- Menu -->
         <record model="ir.actions.act_window" id="crm_claim.crm_case_categ_claim0">
-            <field name="context">{"search_default_user_id":uid, "stage_type":'claim', "claim_type": 'customer'}</field>
+            <field name="context">{"stage_type":'claim', "claim_type": 'customer'}</field>
             <field name="domain" eval="[('claim_type','=','customer')]" />
         </record>
 
@@ -497,7 +497,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,calendar,form</field>
             <field name="view_id" ref="crm_case_claims_tree_view"/>
-            <field name="context">{"search_default_user_id":uid, "stage_type":'claim', "claim_type": 'supplier'}</field>
+            <field name="context">{"stage_type":'claim', "claim_type": 'supplier'}</field>
             <field name="domain" eval="[('claim_type','=','supplier')]" />
             <field name="search_view_id" ref="crm_claim.view_crm_case_claims_filter"/>
             <field name="help" type="html">
