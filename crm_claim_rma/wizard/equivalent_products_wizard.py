@@ -40,7 +40,7 @@ class equivalent_products_wizard(orm.TransientModel):
             if not onchange:
                 tag_ids = [x.id for x in wiz.tag_ids]
             product_ids = set(product_obj.search(cr, uid,
-                                                 [('sale_ok', '=', True)],
+                                                 [('type', '!=', "service")],
                                                  context=context))
             # se buscan todos los product.tag que coincidan con los del wiz
             for tag in tag_wiz_obj.browse(cr, uid, tag_ids, context):
@@ -49,7 +49,7 @@ class equivalent_products_wizard(orm.TransientModel):
                                          context=context)
                 products = product_obj.search(cr, uid,
                                               [('tag_ids', 'in', tag_ids),
-                                               ('sale_ok', '=', True)],
+                                               ('type', '!=', "service")],
                                               context=context)
                 product_ids = product_ids & set(products)
             res[wiz.id] = list(product_ids)
@@ -62,8 +62,6 @@ class equivalent_products_wizard(orm.TransientModel):
                                        string='Products'),
         'product_id': fields.many2one('product.product', 'Product selected'),
         'line_id': fields.many2one('claim.line', 'Line'),
-        'real_stock': fields.float('Real Stock'),
-        'virtual_stock': fields.float('Virtual Stock'),
         'real_stock': fields.float("Real Stock", readonly=True),
         'virtual_stock': fields.float("Virtual Stock", readonly=True),
     }
@@ -73,6 +71,8 @@ class equivalent_products_wizard(orm.TransientModel):
         if context.get('line_id'):
             claim_line_id = self.pool.get('claim.line').browse(cr, uid, context['line_id'])
             res['product_id'] = claim_line_id.product_id.id
+            res['real_stock'] = claim_line_id.product_id.qty_available
+            res['virtual_stock'] = claim_line_id.product_id.virtual_available
         return res
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form',
@@ -93,7 +93,7 @@ class equivalent_products_wizard(orm.TransientModel):
         if line_id:
             # se buscan productos con los mismos tags que el de la linea
             product_ids = set(product_obj.search(cr, uid,
-                                                 [('sale_ok', '=', True)],
+                                                 [('type', '!=', "service")],
                                                  context=context))
             line = self.pool.get('claim.line').browse(cr, uid, line_id,
                                                       context)
@@ -101,7 +101,7 @@ class equivalent_products_wizard(orm.TransientModel):
             for tag in product.tag_ids:
                 products = product_obj.search(cr, uid,
                                               [('tag_ids', 'in', [tag.id]),
-                                               ('sale_ok', '=', True)],
+                                               ('type', '!=', "service")],
                                               context=context)
                 product_ids = product_ids & set(products)
 
@@ -125,10 +125,10 @@ class equivalent_products_wizard(orm.TransientModel):
         return {'value': {'product_ids': product_ids},
                 'domain': {'product_id': [('id', 'in', product_ids)]}}
 
-    def onchange_product_id(self, cr, uid, ids, product_id, context=None):
-        wiz = self.browse(cr, uid, ids[0])
-        prod_eq = [x.id for x in wiz.product_ids]
-        if product_id not in prod_eq:
+    def onchange_product_id(self, cr, uid, ids, product_id, product_ids=[], context=None):
+        if not product_id:
+            return {}
+        if product_ids and product_id not in product_ids[0][2]:
             raise orm.except_orm(_('Error'),
                                  _('El producto no es equivalente'))
         prod_obj = self.pool.get('product.product')
