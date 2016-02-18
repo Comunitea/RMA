@@ -85,8 +85,8 @@ class claim_make_picking(orm.TransientModel):
             if context.get('type') == 'supplier':
                 loc_id = warehouse_obj.read(
                     cr, uid, warehouse_id,
-                    ['lot_rma_id'],
-                    context=context)['lot_rma_id'][0]
+                    ['lot_breakdown_id'],
+                    context=context)['lot_breakdown_id'][0]
             if context.get('type') == 'customer':
                 loc_id = warehouse_obj.read(
                     cr, uid, warehouse_id,
@@ -260,7 +260,7 @@ class claim_make_picking(orm.TransientModel):
                     wizard_claim_line.equivalent_product_id:
                 product = wizard_claim_line.equivalent_product_id
             qty = wizard_claim_line.product_returned_quantity
-            
+
             product = product.id
             move_id = move_obj.create(
                 cr, uid,
