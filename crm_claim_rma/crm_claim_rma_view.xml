@@ -232,7 +232,7 @@
         <field name="inherit_id" ref="crm_claim.crm_case_claims_form_view"/>
         <field name="arch" type="xml">
             <field name="partner_id" position="replace">
-                <field name="partner_id" string="Partner" on_change="onchange_partner_id(partner_id)" required="1"/>
+                <field name="partner_id" string="Partner" on_change="onchange_partner_id(partner_id)" required="1" domain="[('is_company', '=', True)]"/>
                 <field name="invoice_type"/>
                 <field name="invoice_id" on_change="onchange_invoice_id(invoice_id,warehouse_id,context)" domain="['|',('commercial_partner_id','=',partner_id),('partner_id','=',partner_id)]" attrs="{'invisible': [('invoice_type', '!=', 'refund')]}"/>
                 <group colspan="4" col="4">
