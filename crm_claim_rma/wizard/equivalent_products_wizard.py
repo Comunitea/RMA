@@ -39,20 +39,11 @@ class equivalent_products_wizard(orm.TransientModel):
         for wiz in self.browse(cr, uid, ids, context):
             if not onchange:
                 tag_ids = [x.id for x in wiz.tag_ids]
-            product_ids = set(product_obj.search(cr, uid,
-                                                 [('type', '!=', "service")],
-                                                 context=context))
-            # se buscan todos los product.tag que coincidan con los del wiz
-            for tag in tag_wiz_obj.browse(cr, uid, tag_ids, context):
-                tag_ids = tag_obj.search(cr, uid,
-                                         [('name', '=', tag.name)],
-                                         context=context)
-                products = product_obj.search(cr, uid,
-                                              [('tag_ids', 'in', tag_ids),
-                                               ('type', '!=', "service")],
-                                              context=context)
-                product_ids = product_ids & set(products)
-            res[wiz.id] = list(product_ids)
+            product_ids = product_obj.search(cr, uid,
+                                                 [('type', '!=', "service"),
+                                                 ('tag_ids', 'in', tag_ids)],
+                                                 context=context)
+            res[wiz.id] = product_ids
         return res
 
     _columns = {
@@ -73,6 +64,7 @@ class equivalent_products_wizard(orm.TransientModel):
             res['product_id'] = claim_line_id.product_id.id
             res['real_stock'] = claim_line_id.product_id.qty_available
             res['virtual_stock'] = claim_line_id.product_id.virtual_available
+            res['tag_ids'] = [(6, 0, claim_line_id.product_id.tag_ids.ids)]
         return res
 
     def fields_view_get(self, cr, uid, view_id=None, view_type='form',
@@ -115,6 +107,7 @@ class equivalent_products_wizard(orm.TransientModel):
         return res
 
     def onchange_tags(self, cr, uid, ids, tag_ids=False, context=None):
+        import ipdb; ipdb.set_trace()
         if not tag_ids:
             return True
         tag_ids = tag_ids[0][2]
