@@ -91,8 +91,8 @@ class claim_make_picking(orm.TransientModel):
             if context.get('type') == 'customer':
                 loc_id = warehouse_obj.read(
                     cr, uid, warehouse_id,
-                    ['lot_stock_id'],
-                    context=context)['lot_stock_id'][0]
+                    ['lot_rma_id'],
+                    context=context)['lot_rma_id'][0]
 
         elif context.get('picking_type') == 'in':
             if context.get('type') == 'supplier':
