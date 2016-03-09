@@ -31,18 +31,25 @@ class equivalent_products_wizard(orm.TransientModel):
     _description = "Wizard for change products in claim."
 
     def _get_products(self, cr, uid, ids, field_name, arg, context=None,
-                      tag_ids=None, onchange=None):
+                      tag_ids=[], onchange=False):
         res = {}
         product_obj = self.pool.get('product.product')
         tag_obj = self.pool.get('product.tag')
         tag_wiz_obj = self.pool.get('equivalent.tag.wizard')
         for wiz in self.browse(cr, uid, ids, context):
-            if not onchange:
-                tag_ids = [x.id for x in wiz.tag_ids]
+            if tag_ids:
+                tags = tag_ids
+                operator = 'in'
+            elif wiz.tag_ids and not onchange:
+                tags = wiz.tag_ids.ids
+                operator = 'in'
+            else:
+                tags = False
+                operator = "="
             product_ids = product_obj.search(cr, uid,
-                                                 [('type', '!=', "service"),
-                                                 ('tag_ids', 'in', tag_ids)],
-                                                 context=context)
+                                             [('type', '!=', "service"),
+                                              ('tag_ids', operator, tags)],
+                                             context=context)
             res[wiz.id] = product_ids
         return res
 
@@ -76,12 +83,9 @@ class equivalent_products_wizard(orm.TransientModel):
         if context is None:
             context = {}
         line_id = context.get('line_id', False)
-        res = super(equivalent_products_wizard, self).fields_view_get(cr, uid,
-                                                                      view_id,
-                                                                      view_type,
-                                                                      context,
-                                                                      toolbar,
-                                                                      submenu)
+        res = super(equivalent_products_wizard, self).\
+            fields_view_get(cr, uid, view_id, view_type, context, toolbar,
+                            submenu)
         if line_id:
             # se buscan productos con los mismos tags que el de la linea
             product_ids = set(product_obj.search(cr, uid,
@@ -90,12 +94,17 @@ class equivalent_products_wizard(orm.TransientModel):
             line = self.pool.get('claim.line').browse(cr, uid, line_id,
                                                       context)
             product = line.product_id
-            for tag in product.tag_ids:
-                products = product_obj.search(cr, uid,
-                                              [('tag_ids', 'in', [tag.id]),
-                                               ('type', '!=', "service")],
-                                              context=context)
-                product_ids = product_ids & set(products)
+
+            if product.tag_ids:
+                tags = product.tag_ids.ids
+                operator = 'in'
+            else:
+                tags = False
+                operator = "="
+            product_ids = product_obj.search(cr, uid,
+                                          [('tag_ids', operator, tags),
+                                           ('type', '!=', "service")],
+                                          context=context)
 
             # se añade a la vista el domain
             doc = etree.XML(res['arch'])
@@ -107,14 +116,10 @@ class equivalent_products_wizard(orm.TransientModel):
         return res
 
     def onchange_tags(self, cr, uid, ids, tag_ids=False, context=None):
-        import ipdb; ipdb.set_trace()
-        if not tag_ids:
-            return True
-        tag_ids = tag_ids[0][2]
+        tag_ids = tag_ids and tag_ids[0][2] or []
         product_ids = self._get_products(cr, uid, ids,
                                          "product_ids", "",
-                                         context, tag_ids,
-                                         True)[ids[0]]
+                                         context, tag_ids, True)[ids[0]]
         return {'value': {'product_ids': product_ids},
                 'domain': {'product_id': [('id', 'in', product_ids)]}}
 

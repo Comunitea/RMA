@@ -18,6 +18,7 @@
                             <button string="Cancel" special="cancel" icon="gtk-cancel"/>
                             <field name="product_ids" colspan="4" select="1" nolabel="1">
                                 <tree string="Products">
+                                    <field name="default_code"/>
                                     <field name="name"/>
                                     <field name="qty_available"/>
                                     <field name="virtual_available"/>
