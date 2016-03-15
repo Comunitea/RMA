@@ -92,7 +92,7 @@
                     <field name="repair_id" readonly="1"/>
                     <field name="repair_state"/>
                     <field name="state" readonly="1"/>
-                    <field name="substate_id"/>
+                    <field name="substate_id" widget="selection"/>
                     <field name="move_in_customer_state"/>
                     <field name="move_out_customer_state"/>
                     <field name="supplier_id"/>
