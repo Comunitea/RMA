@@ -11,7 +11,7 @@
             <field name="arch" type="xml">
                 <data>
                     <xpath expr="/form/sheet/notebook/page[@string='Other Info']/group/group/field[@name='origin']" position="after">
-                        <field name="claim_id" attrs="{'invisible':[('type','!=','out_refund')]}"/>
+                        <field name="claim_id" attrs="{'invisible':[('type','!=','out_refund')]}" domain="[('partner_id', 'child_of', [partner_id])]"/>
                     </xpath>
                 </data>
             </field>
