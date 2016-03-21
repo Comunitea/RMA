@@ -235,25 +235,23 @@ class claim_make_picking(orm.TransientModel):
         # create picking
         type_ids = self.pool.get('stock.picking.type').search(
             cr, uid, [('code', '=', p_type)], context=context)
-        if p_type == 'incoming' and claim.claim_type == 'supplier':
-            picking_id = False
-        else:
-            picking_id = picking_obj.create(
-                cr, uid,
-                {'origin': claim.number,
-                 'picking_type_id': type_ids and type_ids[0],
-                 'move_type': 'one',  # direct
-                 'state': 'draft',
-                 'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                 'partner_id': partner_id,
-                 'invoice_state': "none",
-                 'company_id': claim.company_id.id,
-                 'location_id': wizard.claim_line_source_location.id,
-                 'location_dest_id': wizard.claim_line_dest_location.id,
-                 'note': note,
-                 'claim_id': claim.id,
-                 },
-                context=context)
+
+        picking_id = picking_obj.create(
+            cr, uid,
+            {'origin': claim.number,
+             'picking_type_id': type_ids and type_ids[0],
+             'move_type': 'one',  # direct
+             'state': 'draft',
+             'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+             'partner_id': partner_id,
+             'invoice_state': "none",
+             'company_id': claim.company_id.id,
+             'location_id': wizard.claim_line_source_location.id,
+             'location_dest_id': wizard.claim_line_dest_location.id,
+             'note': note,
+             'claim_id': claim.id,
+             },
+            context=context)
         # Create picking lines
         for wizard_claim_line in wizard.claim_line_ids:
             move_obj = self.pool.get('stock.move')

@@ -19,12 +19,12 @@
                     <field name="picking_line_ids" nolabel="1" colspan="4"/>
                     <group col="4" colspan="2">
                         <button special="cancel" string="Cancel" name="action_cancel" type="object" icon='gtk-cancel'/>
-                        <button name="action_create_picking_from_picking" string="Create picking" 
+                        <button name="action_create_picking_from_picking" string="Create picking"
                                 icon='gtk-ok' type="object"/>
                     </group>
                 </form>
             </field>
-        </record> 
+        </record>
 
         <record id="action_stock_picking_from_claim_picking" model="ir.actions.act_window">
             <field name="name">Create Incomming Shipment to Stock</field>
@@ -33,8 +33,8 @@
             <field name="src_model">stock.picking</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
-            <field name="target">new</field> 
-            <field name="context">{'picking_type': 'picking_stock'}</field>
+            <field name="target">new</field>
+            <field name="context">{'picking_type': 'picking_stock', 'p_type': 'incoming'}</field>
         </record>
 
         <record id="action_loss_picking_from_claim_picking" model="ir.actions.act_window">
@@ -44,8 +44,8 @@
             <field name="src_model">stock.picking</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
-            <field name="target">new</field> 
-            <field name="context">{'picking_type': 'picking_breakage_loss'}</field>
+            <field name="target">new</field>
+            <field name="context">{'picking_type': 'picking_breakage_loss', 'p_type': 'outgoing'}</field>
         </record>
 
         <record id="action_used_picking_from_claim_picking" model="ir.actions.act_window">
@@ -55,8 +55,8 @@
             <field name="src_model">stock.picking</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
-            <field name="target">new</field> 
-            <field name="context">{'picking_type': 'picking_refurbish'}</field>
+            <field name="target">new</field>
+            <field name="context">{'picking_type': 'picking_refurbish', 'p_type': 'outgoing'}</field>
         </record>
 
     </data>

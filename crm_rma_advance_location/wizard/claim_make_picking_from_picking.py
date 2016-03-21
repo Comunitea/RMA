@@ -89,7 +89,10 @@ class claim_make_picking_from_picking(orm.TransientModel):
         move_obj = self.pool.get('stock.move')
         view_obj = self.pool.get('ir.ui.view')
         if context is None: context = {}
-        p_type = 'internal'
+        if context.get('p_type', False):
+            p_type = context['p_type']
+        else:
+            p_type = 'internal'
         type_ids = self.pool.get('stock.picking.type').search(cr, uid, [('code', '=', p_type)], context=context)
         if context.get('picking_type'):
             context_type = context.get('picking_type')[8:]
@@ -154,6 +157,7 @@ class claim_make_picking_from_picking(orm.TransientModel):
             'picking_type_id': type_ids and type_ids[0],
             'note' : note,
             'claim_id': prev_picking.claim_id.id,
+            'partner_id': prev_picking.claim_id.company_id.partner_id.id
         }
         picking_id = picking_obj.copy(cr, uid, prev_picking.id, default_picking_data, context)
         for wizard_picking_line in wizard.picking_line_ids:
@@ -166,12 +170,13 @@ class claim_make_picking_from_picking(orm.TransientModel):
                 'location_id': wizard.picking_line_source_location.id,
                 'location_dest_id': wizard.picking_line_dest_location.id,
                 'note': note,
+                'picking_type_id': type_ids and type_ids[0],
             }
             move_id = move_obj.copy(cr, uid, wizard_picking_line.id, default_move_data, context)
-            wizard_move = move_obj.write(cr, uid,
-                                         wizard_picking_line.id,
-                                         {'move_dest_id': move_id},
-                                         context=context)
+            #~ wizard_move = move_obj.write(cr, uid,
+                                         #~ wizard_picking_line.id,
+                                         #~ {'move_dest_id': move_id},
+                                         #~ context=context)
 
         wf_service = netsvc.LocalService("workflow")
         if picking_id:
