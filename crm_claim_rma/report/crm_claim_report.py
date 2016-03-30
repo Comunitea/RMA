@@ -43,10 +43,8 @@ class crm_claim_report(osv.osv):
         'create_date': fields.datetime('Create Date', readonly=True, select=True),
         'claim_date': fields.datetime('Claim Date', readonly=True),
         'delay_close': fields.float('Delay to close', digits=(16,2),readonly=True, group_operator="avg",help="Number of Days to close the case"),
-        'stage_id': fields.many2one ('crm.case.stage', 'Stage', readonly=True,domain="[('section_ids','=',section_id)]"),
-        'categ_id': fields.many2one('crm.case.categ', 'Category',\
-                         domain="[('section_id','=',section_id),\
-                        ('object_id.model', '=', 'crm.claim')]", readonly=True),
+        'stage_id': fields.many2one ('crm.claim.stage', 'Stage', readonly=True),
+        'categ_id': fields.many2one('crm.case.categ', 'Category', readonly=True),
         'partner_id': fields.many2one('res.partner', 'Partner', readonly=True),
         'company_id': fields.many2one('res.company', 'Company', readonly=True),
         'priority': fields.selection(AVAILABLE_PRIORITIES, 'Priority'),
@@ -57,6 +55,9 @@ class crm_claim_report(osv.osv):
         'email': fields.integer('# Emails', size=128, readonly=True),
         'subject': fields.char('Claim Subject', readonly=True),
         'nbr': fields.float('RMA cost', readonly=True),
+        'claim_type': fields.selection([('customer', 'Customer'),
+                                        ('supplier', 'Supplier')],
+                                       string='Claim type', readonly=True),
     }
 
     def init(self, cr):
@@ -79,6 +80,7 @@ class crm_claim_report(osv.osv):
                     c.partner_id,
                     c.company_id,
                     c.categ_id,
+                    c.claim_type,
                     c.name as subject,
                     c.priority as priority,
                     c.type_action as type_action,
@@ -90,7 +92,7 @@ class crm_claim_report(osv.osv):
                 from
                     crm_claim c
                 group by c.date,\
-                        c.user_id,c.section_id, c.stage_id,\
+                        c.user_id,c.section_id, c.stage_id,c.claim_type,\
                         c.categ_id,c.partner_id,c.company_id,c.create_date,
                         c.priority,c.type_action,c.date_deadline,c.date_closed,c.id
             )""")

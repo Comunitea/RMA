@@ -10,7 +10,7 @@
             <field name="arch" type="xml">
                 <graph string="Claims" type="pivot" stacked="True">
                     <field name="stage_id" type="row"/>
-                    <field name="section_id" type="col"/>
+                    <field name="subject" type="col"/>
                     <field name="nbr" type="measure"/>
                 </graph>
             </field>
@@ -42,13 +42,8 @@
                             groups="base.group_multi_salesteams"/>
                     <group  expand="0" string="Extended Filters...">
                         <field name="partner_id" filter_domain="[('partner_id','child_of',self)]"/>
-                        <field name="stage_id" domain="[('section_ids', '=', 'section_id')]"/>
+                        <field name="stage_id"/>
                         <field name="categ_id" domain="[('object_id.model', '=', 'crm.claim')]"/>
-                        <field name="priority"/>
-                        <field name="type_action"/>
-                        <field name="create_date" />
-                        <field name="date_closed" />
-                        <field name="date_deadline" />
                     </group>
                     <group  expand="1" string="Group By">
                         <filter string="Salesperson" name="Salesperson" context="{'group_by':'user_id'}" />
@@ -84,7 +79,7 @@
             <field name="act_window_id" ref="action_report_crm_claim_cost"/>
         </record>
 
-        <menuitem name="Claims costs" id="menu_report_crm_claim_cost_tree"
+        <menuitem name="Claims Analysis" id="crm_claim.menu_report_crm_claim_tree"
             action="action_report_crm_claim_cost" parent="base.next_id_64" sequence="15"/>
 
     </data>

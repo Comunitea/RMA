@@ -507,6 +507,7 @@ class crm_claim(orm.Model):
             required=True,
             select=True,
             help="Company internal claim unique number"),
+        'categ_id': fields.many2one('crm.case.categ', 'Category'),
         'supplier_number': fields.char(
             'Supplier Number',
             select=True,

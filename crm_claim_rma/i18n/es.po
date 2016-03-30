@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* crm_claim_rma
+#       * crm_claim_rma
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-01 09:49+0000\n"
-"PO-Revision-Date: 2016-02-01 09:49+0000\n"
+"POT-Creation-Date: 2016-03-30 16:44+0000\n"
+"PO-Revision-Date: 2016-03-30 16:44+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,7 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 "                </p>\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                    Record and track your suppliers' claims. Claims may be linked to a sales order or a lot.You can send emails with attachments and keep the full history for a claim (emails sent, intervention type and so on).Claims may automatically be linked to an email address using the mail gateway module.\n"
+"                    Registre y siga las reclamaciones a sus proveedores. Las reclamaciones puede asociarse a pedidos de ventas o a lotes. Puede enviar emails con adjuntos y mantener el historial completo de una reclamación (emails enviados, tipos de intervenciones y cualquier otra cosa). Las reclamaciones pueden automáticamente ser asociadas a una dirección de email usando el módulo de pasarela de correo.\n"
 "                </p>\n"
 "            "
 
@@ -51,7 +51,7 @@ msgstr "Acción"
 #. module: crm_claim_rma
 #: field:crm.claim.cost.report,type_action:0
 msgid "Action Type"
-msgstr "Action Type"
+msgstr "Tipo acción"
 
 #. module: crm_claim_rma
 #: field:substate.substate,active:0
@@ -213,6 +213,7 @@ msgstr "Etapas de reclamación"
 #. module: crm_claim_rma
 #: field:claim.line,claim_type:0
 #: field:crm.claim,claim_type:0
+#: field:crm.claim.cost.report,claim_type:0
 msgid "Claim type"
 msgstr "Tipo de reclamación"
 
@@ -229,11 +230,6 @@ msgstr "Reclamaciones"
 #: model:ir.actions.act_window,name:crm_claim_rma.action_report_crm_claim_cost
 msgid "Claims Analysis"
 msgstr "Análisis de reclamaciones"
-
-#. module: crm_claim_rma
-#: model:ir.ui.menu,name:crm_claim_rma.menu_report_crm_claim_cost_tree
-msgid "Claims costs"
-msgstr "Costes de reclamaciones"
 
 #. module: crm_claim_rma
 #: field:crm.claim.cost.report,date_closed:0
@@ -274,7 +270,7 @@ msgstr "Contactos"
 #. module: crm_claim_rma
 #: selection:crm.claim.cost.report,type_action:0
 msgid "Corrective Action"
-msgstr "Corrective Action"
+msgstr "Acción correctiva"
 
 #. module: crm_claim_rma
 #: model:crm.case.categ,name:crm_claim_rma.categ_claim14
@@ -327,21 +323,27 @@ msgid "Created on"
 msgstr "Creado el"
 
 #. module: crm_claim_rma
+#: selection:crm.claim.cost.report,priority:0
+msgid "Critical"
+msgstr "Crítica"
+
+#. module: crm_claim_rma
 #: view:claim.line:crm_claim_rma.view_crm_claim_lines_filter
 msgid "Current"
 msgstr "Actual"
 
 #. module: crm_claim_rma
-#: code:addons/crm_claim_rma/crm_claim_rma.py:661
+#: code:addons/crm_claim_rma/crm_claim_rma.py:662
 #: view:claim.line:crm_claim_rma.view_crm_claim_lines_filter
 #: field:claim.line,partner_id:0
 #: selection:crm.claim,claim_type:0
+#: selection:crm.claim.cost.report,claim_type:0
 #, python-format
 msgid "Customer"
 msgstr "Cliente"
 
 #. module: crm_claim_rma
-#: code:addons/crm_claim_rma/crm_claim_rma.py:665
+#: code:addons/crm_claim_rma/crm_claim_rma.py:666
 #, python-format
 msgid "Customer Email"
 msgstr "Email de cliente"
@@ -378,12 +380,12 @@ msgstr "Producto enviado dañado"
 #. module: crm_claim_rma
 #: field:crm.claim.cost.report,date_deadline:0
 msgid "Deadline"
-msgstr "Deadline"
+msgstr "Fecha límite"
 
 #. module: crm_claim_rma
 #: field:crm.claim.cost.report,delay_close:0
 msgid "Delay to close"
-msgstr "Delay to close"
+msgstr "Reatraso en cerrar"
 
 #. module: crm_claim_rma
 #: model:crm.case.categ,name:crm_claim_rma.categ_claim20
@@ -433,7 +435,8 @@ msgid "Draft and Open Claims"
 msgstr "Reclamaciones abiertas o en borrador"
 
 #. module: crm_claim_rma
-#: code:addons/crm_claim_rma/wizard/equivalent_products_wizard.py:122
+#: code:addons/crm_claim_rma/wizard/equivalent_products_wizard.py:131
+#: code:addons/crm_claim_rma/wizard/equivalent_products_wizard.py:146
 #, python-format
 msgid "El producto no es equivalente"
 msgstr "El producto no es equivalente"
@@ -450,7 +453,8 @@ msgstr "Productos equivalentes"
 #: code:addons/crm_claim_rma/crm_claim_rma.py:329
 #: code:addons/crm_claim_rma/wizard/account_invoice_refund.py:37
 #: code:addons/crm_claim_rma/wizard/claim_make_picking.py:73
-#: code:addons/crm_claim_rma/wizard/equivalent_products_wizard.py:121
+#: code:addons/crm_claim_rma/wizard/equivalent_products_wizard.py:130
+#: code:addons/crm_claim_rma/wizard/equivalent_products_wizard.py:145
 #, python-format
 msgid "Error"
 msgstr "Error"
@@ -499,7 +503,7 @@ msgstr "Documentos generados"
 #. module: crm_claim_rma
 #: view:crm.claim.cost.report:crm_claim_rma.view_report_crm_claim_cost_filter
 msgid "Group By"
-msgstr "Group By"
+msgstr "Agrupar por"
 
 #. module: crm_claim_rma
 #: view:claim.line:crm_claim_rma.view_crm_claim_lines_filter
@@ -514,7 +518,7 @@ msgstr "Obtenga una visión global de todas las reclamaciones procesadas en el s
 #. module: crm_claim_rma
 #: selection:crm.claim.cost.report,priority:0
 msgid "High"
-msgstr "Alto"
+msgstr "Alta"
 
 #. module: crm_claim_rma
 #: field:claim.line,id:0
@@ -542,17 +546,17 @@ msgstr "En progreso"
 #. module: crm_claim_rma
 #: view:claim.line:crm_claim_rma.view_crm_claim_lines_filter
 msgid "In Progress Claims"
-msgstr "Reclamaciones en proceso"
+msgstr "Reclamaciones en progreso"
 
 #. module: crm_claim_rma
 #: model:ir.actions.act_window,name:crm_claim_rma.act_crm_claim_rma_picking_in
 msgid "Incoming Shipment and Returns"
-msgstr "Incoming Shipment and Returns"
+msgstr "Envíos entrantes y Devoluciones"
 
 #. module: crm_claim_rma
 #: field:claim.line,internal_description:0
 msgid "Internal Description"
-msgstr "Internal Description"
+msgstr "Descripción interna"
 
 #. module: crm_claim_rma
 #: view:claim.line:crm_claim_rma.view_crm_claim_lines_filter
@@ -669,20 +673,15 @@ msgid "Lost during transport"
 msgstr "Perdido durante el transporte"
 
 #. module: crm_claim_rma
-#: selection:crm.claim.cost.report,priority:0
-msgid "Low"
-msgstr "Bajo"
-
-#. module: crm_claim_rma
 #: view:claim.make.repair:crm_claim_rma.claim_make_repair_wizard
 msgid "Make"
-msgstr "Make572"
+msgstr "Crear"
 
 #. module: crm_claim_rma
 #: view:claim.make.repair:crm_claim_rma.claim_make_repair_wizard
 #: model:ir.actions.act_window,name:crm_claim_rma.action_claim_make_repair
 msgid "Make repair"
-msgstr "Reparar578"
+msgstr "Reparar"
 
 #. module: crm_claim_rma
 #: model:crm.case.categ,name:crm_claim_rma.categ_claim17
@@ -717,27 +716,27 @@ msgstr "Descripción detallada del problema"
 #. module: crm_claim_rma
 #: field:claim.line,move_in_customer_id:0
 msgid "Move Line from customer picking in"
-msgstr "Move Line from customer picking in"
+msgstr "Movimiento entrada"
 
 #. module: crm_claim_rma
 #: field:claim.line,move_out_customer_id:0
 msgid "Move Line from customer picking out"
-msgstr "Move Line from customer picking out"
+msgstr "Movimiento salida"
 
 #. module: crm_claim_rma
 #: view:crm.claim.cost.report:crm_claim_rma.view_report_crm_claim_cost_filter
 msgid "My Case(s)"
-msgstr "My Case(s)"
+msgstr "Mi(s) Caso(s)"
 
 #. module: crm_claim_rma
 #: view:crm.claim.cost.report:crm_claim_rma.view_report_crm_claim_cost_filter
 msgid "My Company"
-msgstr "My Company"
+msgstr "Mi compañía"
 
 #. module: crm_claim_rma
 #: view:crm.claim.cost.report:crm_claim_rma.view_report_crm_claim_cost_filter
 msgid "My Sales Team(s)"
-msgstr "My Sales Team(s)"
+msgstr "Mi equipo de ventas"
 
 #. module: crm_claim_rma
 #: field:equivalent.tag.wizard,name:0
@@ -773,11 +772,6 @@ msgstr "Nuevo abono"
 #: model:crm.case.categ,name:crm_claim_rma.categ_claim10
 msgid "No Inventory"
 msgstr "Sin Stock"
-
-#. module: crm_claim_rma
-#: selection:crm.claim.cost.report,priority:0
-msgid "Normal"
-msgstr "Normal"
 
 #. module: crm_claim_rma
 #: selection:claim.line,claim_origine:0
@@ -822,7 +816,7 @@ msgstr "Otro"
 #. module: crm_claim_rma
 #: field:crm.claim.cost.report,delay_expected:0
 msgid "Overpassed Deadline"
-msgstr "Overpassed Deadline"
+msgstr "Fecha límite sobrepasada"
 
 #. module: crm_claim_rma
 #: view:crm.claim:crm_claim_rma.crm_claim_rma_form_view
@@ -849,7 +843,7 @@ msgstr "Tipo de albarán"
 #. module: crm_claim_rma
 #: selection:crm.claim.cost.report,type_action:0
 msgid "Preventive Action"
-msgstr "Preventive Action"
+msgstr "Acción preventiva"
 
 #. module: crm_claim_rma
 #: model:crm.case.categ,name:crm_claim_rma.categ_claim18
@@ -918,6 +912,7 @@ msgstr "Presupuestos y pedidos"
 
 #. module: crm_claim_rma
 #: field:crm.claim,picking_ids:0
+#: selection:crm.claim.cost.report,subject:0
 #: view:stock.picking:crm_claim_rma.view_picking__search
 msgid "RMA"
 msgstr "RMA"
@@ -934,6 +929,11 @@ msgstr "Coste RMA"
 #, python-format
 msgid "Ready to Repair"
 msgstr "Listo para reparar"
+
+#. module: crm_claim_rma
+#: field:equivalent.products.wizard,real_stock:0
+msgid "Real Stock"
+msgstr "Stock real"
 
 #. module: crm_claim_rma
 #: field:crm.claim,real_cost:0
@@ -1013,12 +1013,17 @@ msgstr "Reemplazo"
 #: view:claim.line:crm_claim_rma.view_crm_claim_lines_filter
 #: field:claim.line,user_id:0
 msgid "Responsible"
-msgstr "Responsible"
+msgstr "Responsable"
 
 #. module: crm_claim_rma
 #: view:claim.line:crm_claim_rma.view_crm_claim_lines_filter
 msgid "Responsible User"
-msgstr "Responsible User"
+msgstr "Usuario responsable"
+
+#. module: crm_claim_rma
+#: selection:crm.claim.cost.report,subject:0
+msgid "Return"
+msgstr "Devolución"
 
 #. module: crm_claim_rma
 #: model:ir.actions.act_window,name:crm_claim_rma.action_claim_picking_in
@@ -1090,7 +1095,7 @@ msgstr "Vendedor"
 #. module: crm_claim_rma
 #: view:crm.claim.cost.report:crm_claim_rma.view_report_crm_claim_cost_filter
 msgid "Search"
-msgstr "Search"
+msgstr "Buscar"
 
 #. module: crm_claim_rma
 #: view:claim.line:crm_claim_rma.view_crm_claim_lines_filter
@@ -1213,6 +1218,7 @@ msgstr "Sub-estados"
 #: selection:claim.line,applicable_guarantee:0
 #: field:claim.line,supplier_id:0
 #: selection:crm.claim,claim_type:0
+#: selection:crm.claim.cost.report,claim_type:0
 msgid "Supplier"
 msgstr "Proveedor"
 
@@ -1279,7 +1285,7 @@ msgstr "La línea de factura relacionada con el producto devuelto"
 #: help:claim.line,move_in_customer_id:0
 #: help:claim.line,move_out_customer_id:0
 msgid "The move line related to the returned product"
-msgstr "The move line related to the returned product"
+msgstr "El movimiento asociado al producto devuelto"
 
 #. module: crm_claim_rma
 #: code:addons/crm_claim_rma/crm_claim_rma.py:330
@@ -1375,7 +1381,12 @@ msgstr "Precio de venta unitario del producto. Auto-completado si la devolución
 #. module: crm_claim_rma
 #: field:crm.claim.cost.report,user_id:0
 msgid "User"
-msgstr "User"
+msgstr "Responsable"
+
+#. module: crm_claim_rma
+#: field:equivalent.products.wizard,virtual_stock:0
+msgid "Virtual Stock"
+msgstr "Stock virtual "
 
 #. module: crm_claim_rma
 #: code:addons/crm_claim_rma/crm_claim_rma.py:46
@@ -1436,12 +1447,12 @@ msgstr "Especifica quién es el responsable del tratamiento de la devolución de
 #. module: crm_claim_rma
 #: field:equivalent.tag.wizard,wiz_id:0
 msgid "Wizard"
-msgstr "Wizard"
+msgstr "Asistente"
 
 #. module: crm_claim_rma
 #: model:ir.model,name:crm_claim_rma.model_equivalent_products_wizard
 msgid "Wizard for change products in claim."
-msgstr "Wizard for change products in claim."
+msgstr "Asistente para cambiar los productos en la reclamación."
 
 #. module: crm_claim_rma
 #: model:ir.model,name:crm_claim_rma.model_claim_make_picking_wizard
@@ -1493,7 +1504,7 @@ msgstr "Estado de recepción"
 #. module: crm_claim_rma
 #: field:claim.line,move_out_customer_state:0
 msgid "picking out state"
-msgstr "Estado de envio"
+msgstr "Estado de envío"
 
 #. module: crm_claim_rma
 #: field:claim.line,repair_state:0
@@ -1530,4 +1541,3 @@ msgstr "válido"
 #: view:claim.line:crm_claim_rma.view_crm_claim_lines_filter
 msgid "without supplier RMA"
 msgstr "Sin RMA de proveedor"
-
