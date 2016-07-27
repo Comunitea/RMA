@@ -101,7 +101,8 @@ class stock_move(orm.Model):
                         if not reservation.claim_id:
                             continue
                         followers = reservation.claim_id.message_follower_ids
-                        sale.message_post(body="The date planned was changed.",
-                                          subtype='mt_comment',
-                                          partner_ids=followers)
+                        reservation.claim_id.\
+                            message_post(body="The date planned was changed.",
+                                         subtype='mt_comment',
+                                         partner_ids=followers)
         return super(stock_move, self).write(vals)
