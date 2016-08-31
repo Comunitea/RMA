@@ -34,7 +34,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
-            <field name="context">{'picking_type': 'picking_stock', 'p_type': 'incoming'}</field>
+            <field name="context">{'picking_type': 'picking_input', 'p_type': 'incoming'}</field>
         </record>
 
         <record id="action_loss_picking_from_claim_picking" model="ir.actions.act_window">

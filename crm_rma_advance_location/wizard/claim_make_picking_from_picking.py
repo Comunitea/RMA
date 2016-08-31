@@ -69,7 +69,10 @@ class claim_make_picking_from_picking(orm.TransientModel):
         warehouse_obj = self.pool.get('stock.warehouse')
         if context.get('picking_type'):
             context_loc = context.get('picking_type')[8:]
-            loc_field = 'lot_%s_id' %context.get('picking_type')[8:]
+            if context_loc != "input":
+                loc_field = 'lot_%s_id' %context.get('picking_type')[8:]
+            else:
+                loc_field = "wh_input_stock_loc_id"
             loc_id = warehouse_obj.read(cr, uid,
                 warehouse_id, [loc_field], context=context)[loc_field][0]
         return loc_id
