@@ -425,15 +425,15 @@ class claim_line(orm.Model):
         if not ids:
             return False
         line = self.browse(cr, uid, ids[0], context)
-        tag_wiz_obj = self.pool.get('equivalent.tag.wizard')
+        #~ tag_wiz_obj = self.pool.get('equivalent.tag.wizard')
         wiz_obj = self.pool.get("equivalent.products.wizard")
         context['line_id'] = line.id
         wizard_id = wiz_obj.create(cr, uid, {'line_id': ids[0]},
                                    context=context)
-        for tag in line.product_id.tag_ids:
-            tag_wiz_obj.create(cr, uid,
-                               {'name': tag.name, 'wiz_id': wizard_id},
-                               context)
+        #~ for tag in line.product_id.tag_ids:
+            #~ tag_wiz_obj.create(cr, uid,
+                               #~ {'name': tag.name, 'wiz_id': wizard_id},
+                               #~ context)
         return {
             'name': _("Equivalent products"),
             'view_mode': 'form',
