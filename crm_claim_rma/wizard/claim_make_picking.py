@@ -201,7 +201,6 @@ class claim_make_picking(orm.TransientModel):
              'product_uom_qty': claim_line.product_returned_quantity,
              'product_uom': claim_line.product_id.uom_id.id,
              'partner_id': partner_id,
-             'restrict_lot_id': claim_line.prodlot_id.id,
              'picking_id': picking_id,
              'state': 'draft',
              'price_unit': claim_line.unit_sale_price,
