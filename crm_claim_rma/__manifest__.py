@@ -31,6 +31,7 @@
         'data/crm_claim_category.xml',
         #'views/account_invoice.xml',
         'wizards/claim_make_picking.xml',
+        'wizards/crm_claim_rma_make_refund_view.xml',
         'views/crm_claim.xml',
         "views/claim_line.xml",
         'views/res_partner.xml',

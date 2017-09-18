@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- © 2017 Comunitea
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<openerp>
+    <data>
+
+        <record id="crm_claim_rma_make_refund" model="ir.ui.view">
+            <field name="name">crm.claim.rma.make.refund.form</field>
+            <field name="model">crm.claim.rma.make.refund</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Make claim refund">
+                    <group>
+                        <field name="description"/>
+                        <field name="invoice_date"/>
+                    </group>
+                    <footer>
+                        <button name="make_refund" string="Make refund" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window name="claim make refund"
+            res_model="crm.claim.rma.make.refund"
+            view_id="crm_claim_rma_make_refund"
+            view_mode="form"
+            target="new"
+            id="crm_claim_rma_make_refund_action"/>
+
+    </data>
+</openerp>

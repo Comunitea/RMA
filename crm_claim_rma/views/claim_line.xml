@@ -133,7 +133,7 @@
                             <field name="refund_line_id" readonly="1"/>
                             <field name="move_in_id" readonly="1"/>
                             <field name="move_out_id" readonly="1"/>
-                        </group> 
+                        </group>
                     <separator string="State" colspan="4"/>
                     <group col="6" colspan="4">
                         <field name="substate_id" widget='selection'/>

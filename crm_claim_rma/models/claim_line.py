@@ -117,7 +117,7 @@ class ClaimLine(models.Model):
     @api.model
     def get_warranty_return_partner(self):
         return self.env['product.supplierinfo'].warranty_return_partner
-        
+
 
     warranty_type = fields.Selection(
         get_warranty_return_partner,
@@ -183,6 +183,11 @@ class ClaimLine(models.Model):
         for line in self:
             line.return_value = (line.unit_sale_price *
                                  line.product_returned_quantity)
+    @api.onchange('product_id')
+    def _product_id_change(self):
+        if self.product_id:
+            self.name = self.product_id.name_get()[0][1]
+            self.unit_sale_price = self.product_id.lst_price
 
     @api.multi
     def copy(self, default=None):
