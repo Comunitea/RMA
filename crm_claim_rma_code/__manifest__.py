@@ -4,7 +4,7 @@
 
 {
     'name': 'CRM Claim RMA Code',
-    'version': '9.0.1.0.0',
+    'version': '10.0.1.0.0',
     'category': 'Generic Modules/CRM & SRM',
     'author': 'Vauxoo,Odoo Community Association (OCA)',
     'website': 'http://www.vauxoo.com/',
@@ -17,5 +17,5 @@
         'data/ir_sequence_type.xml',
         'views/crm_claim_type.xml',
     ],
-    'installable': False,
+    'installable': True,
 }

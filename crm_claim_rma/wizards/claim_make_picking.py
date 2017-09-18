@@ -132,13 +132,13 @@ class ClaimMakePicking(models.TransientModel):
 
     def _get_picking_line_data(self, claim, picking, line):
         return {
-            'name': line.product_id.name_template,
+            'name': line.product_id.display_name,
             'priority': '0',
             'date': time.strftime(DT_FORMAT),
             'date_expected': time.strftime(DT_FORMAT),
             'product_id': line.product_id.id,
             'product_uom_qty': line.product_returned_quantity,
-            'product_uom': line.product_id.product_tmpl_id.uom_id.id,
+            'product_uom': line.product_id.uom_id.id,
             'partner_id': claim.delivery_address_id.id,
             'picking_id': picking.id,
             'state': 'draft',
@@ -169,12 +169,12 @@ class ClaimMakePicking(models.TransientModel):
         if self.env.context.get('product_return'):
             common_dest_location = self._get_common_dest_location_from_line(
                 claim_lines)
-            if not common_dest_location:
-                raise exceptions.UserError(
-                    _('A product return cannot be created for various '
-                      'destination locations, please choose line with a '
-                      'same destination location.')
-                )
+            # if not common_dest_location:
+            #     raise exceptions.UserError(
+            #         _('A product return cannot be created for various '
+            #           'destination locations, please choose line with a '
+            #           'same destination location.')
+            #     )
 
             claim_lines.auto_set_warranty()
             common_dest_partner = self._get_common_partner_from_line(
@@ -232,7 +232,7 @@ class ClaimMakePicking(models.TransientModel):
 
         for line in self.claim_line_ids:
             procurement = self.env['procurement.order'].create({
-                'name': line.product_id.name_template,
+                'name': line.product_id.display_name,
                 'group_id': group.id,
                 'origin': claim.code,
                 'warehouse_id': self.delivery_warehouse_id.id,

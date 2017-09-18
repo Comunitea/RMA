@@ -17,7 +17,8 @@ class CrmClaim(models.Model):
     def _get_default_warehouse(self):
         company_id = self.env.user.company_id.id
         wh_obj = self.env['stock.warehouse']
-        wh = wh_obj.search([('company_id', '=', company_id)], limit=1)
+        # MODIFICADO POR NECESIDADES DE JIM
+        wh = wh_obj.search([], limit=1)
         if not wh:
             raise exceptions.UserError(
                 _('There is no warehouse for the current user\'s company.')

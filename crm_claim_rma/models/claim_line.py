@@ -284,9 +284,13 @@ class ClaimLine(models.Model):
         invoice_id = self.invoice_line_id and self.invoice_line_id.invoice_id \
             or claim.invoice_id
         try:
-            values = self._warranty_limit_values(
-                invoice_id, claim.claim_type,
-                self.product_id, claim.date)
+            if invoice_id:
+                values = self._warranty_limit_values(
+                    invoice_id, claim.claim_type,
+                    self.product_id, claim.date)
+            else:
+                values = {'guarantee_limit': False,
+                'warning': 'not_define'}
         except InvoiceNoDate:
             raise exceptions.UserError(
                 _('Cannot find any date for invoice. '
@@ -339,7 +343,7 @@ class ClaimLine(models.Model):
         if not (product and company and warehouse):
             return {
                 'warranty_return_partner': False,
-                'warranty_type': False,
+             #   'warranty_type': False,
                 'location_dest_id': False
             }
         sellers = product.seller_ids
@@ -356,7 +360,7 @@ class ClaimLine(models.Model):
         location_dest = self.get_destination_location(product, warehouse)
         return {
             'warranty_return_partner': return_address_id,
-            'warranty_type': return_type,
+            #'warranty_type': return_type,
             'location_dest_id': location_dest.id
         }
 
@@ -365,6 +369,7 @@ class ClaimLine(models.Model):
         claim = self.claim_id
         values = self._warranty_return_address_values(
             self.product_id, claim.company_id, claim.warehouse_id)
+
         self.write(values)
         return True
 
@@ -376,8 +381,8 @@ class ClaimLine(models.Model):
             if not line_id.product_id:
                 raise exceptions.UserError(_('Please set product first'))
 
-            if not line_id.invoice_line_id:
-                raise exceptions.UserError(_('Please set invoice first'))
+            # if not line_id.invoice_line_id:
+            #     raise exceptions.UserError(_('Please set invoice first'))
 
             line_id.set_warranty_limit()
             line_id.set_warranty_return_address()
