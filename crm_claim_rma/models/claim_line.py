@@ -185,9 +185,15 @@ class ClaimLine(models.Model):
                                  line.product_returned_quantity)
     @api.onchange('product_id')
     def _product_id_change(self):
+        ctx = self._context.copy()
+        ctx.update({'partner': self.claim_id.partner_id.id,
+                    'pricelist':
+                    self.claim_id.partner_id.property_product_pricelist.id})
         if self.product_id:
             self.name = self.product_id.name_get()[0][1]
-            self.unit_sale_price = self.product_id.lst_price
+            product = self.env['product.product'].with_context(ctx).browse(
+                self.product_id.id)
+            self.unit_sale_price = product.price
 
     @api.multi
     def copy(self, default=None):
